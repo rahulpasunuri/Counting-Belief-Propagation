@@ -53,11 +53,11 @@ public abstract class Ground {
 	/**
 	 * Ground the MLN into an MRF.
 	 */
-	protected void ground(){
+	protected void ground()
+	{
 		grounding = new Grounding(mln);
 		grounding.constructMRF();
-               UIMan.println("After Construction");
-                
+		UIMan.println("After Construction");
 	}
 
 	/**
@@ -71,7 +71,8 @@ public abstract class Ground {
 	 * 
 	 * @param opt command line options.
 	 */
-	protected void setUp(CommandOptions opt){
+	protected void setUp(CommandOptions opt)
+	{
 		options = opt;
 		Timer.resetClock();
 
@@ -79,15 +80,15 @@ public abstract class Ground {
 		Clause.mappingFromID2Desc = new HashMap<String, String>();
 		
 		UIMan.println(">>> Connecting to RDBMS at " + Config.db_url);
-                //System.out.println("I am here");
+
 		db = RDB.getRDBbyConfig();
-		//System.out.println("I am here");
+
 		db.resetSchema(Config.db_schema);
-                //System.out.println("I am here3");
+
 		mln = new MarkovLogicNetwork();
-                //System.out.println("I am here");
+
 		loadMLN(mln, db, options);
-                //System.out.println("I am here5");
+
 		mln.materializeTables();
 		
 		KBMC kbmc = new KBMC(mln);
@@ -97,16 +98,17 @@ public abstract class Ground {
 		UIMan.verbose(1, ">>> Marking queries...");
 		mln.storeAllQueries();
 		
-		for(Clause c : mln.listClauses){
-			if(c.isHardClause()){
+		for(Clause c : mln.listClauses)
+		{
+			if(c.isHardClause())
+			{
 				c.isFixedWeight = true;
-			}else{
+			}
+			else
+			{
 				c.isFixedWeight = false;
 			}
 		}
-                
-               // System.out.println(db.schema);
-		
 	}
 	
 	protected void setUp_noloading(CommandOptions opt){
@@ -124,13 +126,17 @@ public abstract class Ground {
 	/**
 	 * Clean up temporary data: the schema in PostgreSQL and the working directory.
 	 */
-	protected void cleanUp(){		
+	protected void cleanUp()
+	{		
 		Config.exiting_mode = true;
 		UIMan.println(">>> Cleaning up temporary data");
-		if(!Config.keep_db_data){
+		if(!Config.keep_db_data)
+		{
 			UIMan.print("    Removing database schema '" + Config.db_schema + "'...");
 			UIMan.println(db.dropSchema(Config.db_schema)?"OK" : "FAILED");
-		}else{
+		}
+		else
+		{
 			UIMan.println("    Data remains in schema '" + Config.db_schema + "'.");
 		}
 		db.close();
@@ -156,37 +162,36 @@ public abstract class Ground {
 	 * @param adb database object used for this MLN
 	 * @param opt command line options
 	 */
-	protected void loadMLN(MarkovLogicNetwork mln, RDB adb, CommandOptions opt){
-		//System.out.println("HELLO1");
+	protected void loadMLN(MarkovLogicNetwork mln, RDB adb, CommandOptions opt)
+	{
 		String[] progFiles = opt.fprog.split(",");
-                //System.out.println("HELLO1.5");
 		mln.loadPrograms(progFiles);
-                //System.out.println("HELLO1.9");
                 
-		if(opt.fquery != null){
-                        //System.out.println("HELLO2");
+		if(opt.fquery != null)
+		{
 			String[] queryFiles = opt.fquery.split(",");
-                           //System.out.println("HELLO2.2");
 			mln.loadQueries(queryFiles);
-                        //System.out.println("HELLO3");
 		}
 		
-		if(opt.queryAtoms != null){
-                        //System.out.println("HELLO4");
+		if(opt.queryAtoms != null)
+		{
 			UIMan.verbose(2, ">>> Parsing query atoms in command line");
-                        //System.out.println("HELLO1.5");
 			mln.parseQueryCommaList(opt.queryAtoms);
-                        //System.out.println("HELLO3");
 		}
 
-		if(opt.cwaPreds != null){
+		if(opt.cwaPreds != null)
+		{
 			String[] preds = opt.cwaPreds.split(",");
-			for(String ps : preds){
+			for(String ps : preds)
+			{
 				Predicate p = mln.getPredByName(ps);
-				if(p == null){
+				if(p == null)
+				{
 					mln.closeFiles();
 					ExceptionMan.die("COMMAND LINE: Unknown predicate name -- " + ps);
-				}else{
+				}
+				else
+				{
 					p.setClosedWorld(true);
 				}
 			}
@@ -194,16 +199,12 @@ public abstract class Ground {
 		
 		mln.prepareDB(adb);
 		
-		if(opt.fevid != null){
+		if(opt.fevid != null)
+		{
 			String[] evidFiles = opt.fevid.split(",");
 			mln.loadEvidences(evidFiles);
-		}
-		
+		}		
 		dmover = new DataMover(mln);
 	}
-
-
-	
-	
 }
 

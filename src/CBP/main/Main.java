@@ -31,8 +31,7 @@ public class Main
         }
 
         if (!options.isDLearningMode)
-        {
-            
+        {            
             long startTime = System.nanoTime();
             new Grounding().run(options,startTime);
             

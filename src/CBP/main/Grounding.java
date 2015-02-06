@@ -41,15 +41,15 @@ public class Grounding extends Ground
         setUp(opt);
         UIMan.println("\n\n>>> Before Ground.....");
         ground();
-        
-        
-        
+        System.out.print("what???");
+        return;      //TODO 
+        /*
         Compression cp = new Compression(grounding, opt.addEvidence,start, opt.noOfIterations);
         cp.setQueryAtoms(opt.fquery);
         cp.runBP();
-        
-        
+               
         cleanUp();
+        */
     }
 
 }
