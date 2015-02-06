@@ -34,7 +34,6 @@ public class DatabaseConnector
         db = db1;
         mln = mln1;
         initializeTables();
-//throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     void createTable(String sql)
@@ -59,7 +58,6 @@ public class DatabaseConnector
         try
         {
             String evi = "";
-            int count = 0;
             ResultSet rs = db.query("Select predid,atomid from mln0_atoms");
             while (rs.next())
             {
@@ -94,7 +92,6 @@ public class DatabaseConnector
                                     c = "F";
                                 }
                             }
-                            //System.out.println("color "+c+" Truth "+evi);
                             sql = "Insert into clusteredPredicate_0 values(" + aid + "," + aid + "," + aid + ",'" + c + "','null')";
 
                             db.update(sql);
@@ -147,8 +144,6 @@ public class DatabaseConnector
         temp = temp[1].split("\\}");
 
         temp[0] = temp[0].replace(",", " ");
-
-        //System.out.println("\nlits: "+temp[0]);
         return temp[0];
     }
 
@@ -184,7 +179,6 @@ public class DatabaseConnector
 
             while (rs.next())
             {
-                //System.out.println(rs.getString("literals"));
                 ArrayList<Integer> atoms = getAtoms(rs.getString("literals"));
                 updateClauseMessage(atoms, rs.getInt("ID"), rs.getDouble("weight"), tableName);
             }
@@ -200,7 +194,6 @@ public class DatabaseConnector
     public int countQuery(String tableName)
     {
         String sql = "Select count(*) from " + tableName;
-        //System.out.println(sql);
         ResultSet rs = db.query(sql);
         try
         {
@@ -240,20 +233,16 @@ public class DatabaseConnector
                 String message = rs.getString("message");
                 if (!msg.equalsIgnoreCase(message))
                 {
-                    //System.out.println("Message Changed\nMessage:" + message + " Msg:" + msg);
                     i++;
-                    //System.out.println(message);
                     wholeCluster = rs.getString("clusters");
                     sql = "Insert into " + newTableName + " values(" + i + ",'" + rs.getString("Clusters") + "','" + rs.getString("literals") + "'," + rs.getDouble("weight") + ",'null')";
                     db.update(sql);
                     msg = message;
                 } else
                 {
-                    //System.out.println(message);
                     //ArrayList<Integer> atoms = getAtoms(rs.getString("literals"));
                     //ResultSet rs1=db.query(sql);
                     String clusters = rs.getString("Clusters");
-                    //wholeCluster=wholeCluster +" "+clusters;
                     String id = rs.getString("ID");
                     String clust[] = clusters.split(" ");
                     for (String clust1 : clust)
@@ -265,10 +254,7 @@ public class DatabaseConnector
                             temp1=temp1.trim();
                             clust1=clust1.trim();
                             if(temp1.equalsIgnoreCase(clust1))
-                            {
-                                //System.out.println("temp1: "+temp1+" clust1:"+clust1);
-                                //System.out.println(wholeCluster);
-                                
+                            {                              
                                 flag=true;
                                 break;
                             }
@@ -287,7 +273,6 @@ public class DatabaseConnector
                 }
                 //c[i]=new Clause();
                 //int id, String clus, String lit,double wt, String msg
-                //System.out.println("Message:" + message + " Lits:" + rs.getString("literals"));
                 sendPredicateMessages(atoms, message);
             }
         } catch (SQLException e)
@@ -314,8 +299,7 @@ public class DatabaseConnector
             atoms.add(Integer.parseInt(x1));
         }
 
-        return atoms;
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return atoms;       
     }
 
     private void updateClauseMessage(ArrayList<Integer> atoms, int ID, double weight, String tableName)
@@ -330,21 +314,17 @@ public class DatabaseConnector
             msg = msg + c + " ";
 
         }
-        //System.out.println("Msg:" + msg);
 
         msg = msg + weight;
 
         String sql = "Update " + tableName + " SET message = '" + msg + "' where ID =" + ID;
-        //System.out.println(sql);
         db.update(sql);
-        //System.out.println("Clustering ....");
 
     }
 
     private String getColorOfPredicate(int id)
     {
         String c = "";
-        //System.out.println("Inside color of");
         boolean notSign = false;
         if (id < 0)
         {
@@ -353,14 +333,12 @@ public class DatabaseConnector
         }
         String tableName = "clusteredPredicate_" + iteration_count;
         String sql = "Select color from " + tableName + " where ID = " + id;
-        //System.out.println(sql);
         try
         {
             ResultSet rs = db.query(sql);
             while (rs.next())
             {
                 c = rs.getString("color");
-                //System.out.println("color :" + c);
                 if (notSign == true)
                 {
                     if (c.equalsIgnoreCase("T"))
@@ -378,7 +356,6 @@ public class DatabaseConnector
         {
             System.out.println(e);
         }
-        //System.out.println("no return state of");
         return c;
 
     }
@@ -386,35 +363,27 @@ public class DatabaseConnector
     private void sendPredicateMessages(ArrayList<Integer> atoms, String message1)
     {
         String tableName = "clusteredPredicate_" + iteration_count;
-        //System.out.println(tableName);
         try
         {
             //ResultSet rs = db.query(selectQuery(tableName));
-            //System.out.println(atoms.size()+" ");
-            //System.out.println(message1);
             for (int i = 0; i < atoms.size(); i++)
             {
                 String message = message1;
                 String sql = selectQuery(tableName) + " where id = " + Math.abs(atoms.get(i));
-                //System.out.println(sql);
                 ResultSet rs = db.query(sql);
                 while (rs.next())
                 {
                     String msg = rs.getString("message");
-                    //System.out.println(msg +" "+Math.abs(atoms.get(i)));
                     if (msg != null)
                     {
                         String temp = msg.trim();
                         if (!temp.equalsIgnoreCase("null"))
                         {
-                            //System.out.println("\nMsg "+msg+" Message: "+message);
                             message = message + " " + msg;
                         }
                     }
 
-                    //System.out.println(atoms.size()+" ");
                     sql = "Update " + tableName + " SET message = '" + message + "'where ID =" + Math.abs(atoms.get(i));
-                    //System.out.println(sql);
                     db.update(sql);
                 }
             }
@@ -449,16 +418,12 @@ public class DatabaseConnector
                 if (!msg.equalsIgnoreCase(message))
                 {
                     i++;
-                    //System.out.println(message);
                     wholeClusters = rs.getString("clusters");
                     c = rs.getString("color");
-                    //System.out.println("\n"+c);
                     if (!c.equalsIgnoreCase("T") && !c.equalsIgnoreCase("F"))
                     {
                         c = color[i];
                     }
-                    //System.out.println(c);
-                    //String c=rs.getString("T");
                     sql = "Insert into " + newTableName + " values( " + i + ",'" + wholeClusters + "'," + i + ",'" + c + "','null')";
 
                     db.update(sql);
@@ -466,7 +431,6 @@ public class DatabaseConnector
                 } else
                 {
 
-                    //System.out.println(message);
                     //ArrayList<Integer> atoms = getAtoms(rs.getString("literals"));
                     String clusters = rs.getString("clusters");
                     //ArrayList<Integer> atoms;
@@ -505,7 +469,6 @@ public class DatabaseConnector
         String predTableName = "clusteredPredicate_" + (iteration_count + 1);
 
         String sql = selectQuery(tableName);
-        //System.out.println(sql);
         try
         {
             rs = db.query(sql);
@@ -513,18 +476,15 @@ public class DatabaseConnector
             {
                 ArrayList<Integer> atoms = getAtoms(rs.getString("literals"));
                 String newAtoms = "";
-                //System.out.println(rs.getString("literals"));
                 for (int i = 0; i < atoms.size(); i++)
                 {
                     int atom = atoms.get(i);
-                    //System.out.println(atom);
                     sql = selectQuery(predTableName);
                     rs1 = db.query(sql);
                     String id = "";
                     while (rs1.next())
                     {
                         String clusters = rs1.getString("clusters");
-                        //System.out.println("clusters :"+clusters+" atom :"+Integer.toString(Math.abs(atom)));
                         String temp[] = clusters.split(" ");
                         for (int l = 0; l < temp.length; l++)
                         {
@@ -537,7 +497,6 @@ public class DatabaseConnector
                         }
 
                     }
-                    //System.out.println("ID :"+id);
 
                     if (atom < 0)
                     {
@@ -551,10 +510,8 @@ public class DatabaseConnector
                     {
                         newAtoms = newAtoms + " " + id;
                     }
-                    //System.out.println("nA :"+newAtoms+" id :"+id);
 
                 }
-                //System.out.println(newAtoms);
 
                 sql = "Select ID,Clusters from " + newTableName;
                 rs1 = db.query(sql);
@@ -562,7 +519,6 @@ public class DatabaseConnector
                 while (rs1.next())
                 {
                     String clusters = rs1.getString("clusters");
-                    //System.out.println(clusters+" ID:"+rs.getString("ID"));
                     String temp[] = clusters.split(" ");
                     for (String temp1 : temp)
                     {
@@ -570,7 +526,6 @@ public class DatabaseConnector
                         {
                             String ID = rs1.getString("id");
                             sql = "Update " + newTableName + " SET literals ='" + newAtoms + "' where id=" + ID;
-                            //System.out.println(sql);
                             db.update(sql);
                             break;
                         }
@@ -579,7 +534,6 @@ public class DatabaseConnector
                 }
                 //Now get the ID of new clustertable
 
-                //System.out.println("new Atoms :"+newAtoms);
             }
 
         } catch (SQLException e)

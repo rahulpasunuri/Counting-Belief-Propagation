@@ -13,11 +13,9 @@ import java.util.ArrayList;
  * @author shrutika
  */
 class PMessage {
-    ArrayList<String> msg = new ArrayList();
-//    int hashCode;
+    ArrayList<String> msg = new ArrayList<String>();
 
     void addClauseMsgToPredicate(String s) {
-        //System.out.println(s);
         msg.add(s);
     }
     
