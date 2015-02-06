@@ -28,36 +28,17 @@ public class Compression
     MarkovLogicNetwork mln;
     RDB db;
     Grounding grounding;
-    private int iterationCount=0;
-    //private DatabaseConnector dc;
-    private ArrayList<Clause> currentCLauseList;
-    private ArrayList<Predicate> currentPredicateList;
-    private ArrayList<Clause> previousCLauseList;
-    private ArrayList<Predicate> previousPredicateList;
     private final Compress c;
     private String queryAtoms;
-    
-    
 
     public Compression(Grounding g, String s, long stat, int noOfIterations)
     {
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-//        System.out.println("Started0");
-        //long startTime = System.nanoTime();
         grounding = g;
         mln = g.getMLN();
         db = mln.getRDB();
         db.schema = Config.db_schema;
-//        printAllTablesinSchema();
         new ParseEvidence(db).parse(s,mln);
-//        System.out.println("Evidence parsed");
-        //dc = new DatabaseConnector(db,mln);
-        
         c= new Compress(db,mln,noOfIterations);
-//        System.out.println("Started");
-        //printAllTablesinSchema();
-        //Compress();
-
 
     }
     
@@ -66,14 +47,12 @@ public class Compression
         ArrayList<Clause> cl = c.getCompressedClauses();
         ArrayList<CBP.Compression.Predicate> pd = c.getCompressedPreds();
         BeliefPropagation bp;
-//        bp = new BeliefPropagation(preds, cl);
-//        System.out.println("Query Atoms: "+queryAtoms);
-         bp = new BeliefPropagation(pd, cl);
-//         ArrayList<Integer> iQuerys=new EstimateQuery(db).parse(queryAtoms,mln);
-         bp.computeProbabilities();
+		bp = new BeliefPropagation(pd, cl);
+		bp.computeProbabilities();
         
     }
 
+    /*
     public void printAllTablesinSchema()
     {
         try
@@ -111,45 +90,16 @@ public class Compression
                 System.out.println("\n\n");
 
             }
-        } catch (Exception e)
+        } 
+        catch (Exception e)
         {
             System.out.println(e);
         }
     }
+     */
     
-    public void Compress()
-    {
-        //mln0_clauses
-        
-            
-            
-        while(true)
-        {
-            System.out.println(iterationCount);
-            
-            
-            
-            if(convergence())
-            {
-                System.out.println(iterationCount);
-                break;
-            }
-        }
-    }
-    
-    private boolean convergence()
-    {
-        
-        
-        
-        return false;
-    }
-
-   
-
     public void setQueryAtoms(String query)
     {
-//        System.out.println("\n\ninside set:"+query);
         queryAtoms = query;
     }
     

@@ -17,21 +17,20 @@ public class Graph
 
     private final ArrayList<Vertex> vertices;
     private final ArrayList<Edge> edges;
-    private ArrayList<Vertex> predVertices = new ArrayList();
-//    public ArrayList<CopyClusters> copyNodes = new ArrayList();
-    private ArrayList<Vertex> randomVertexCluster= new ArrayList();
+    private ArrayList<Vertex> predVertices = new ArrayList<Vertex>();
     private int count=1;
     private Vertex randomVertex;
+ 
     public Graph()
     {
-        vertices = new ArrayList();
-        edges = new ArrayList();
+        vertices = new ArrayList<Vertex>();
+        edges = new ArrayList<Edge>();
     }
 
-        public ArrayList<Vertex> getVertices()
-        {
-            return vertices;
-        }
+	public ArrayList<Vertex> getVertices()
+	{
+	    return vertices;
+	}
         
         
     public boolean addVertex(Vertex v)
@@ -39,11 +38,11 @@ public class Graph
         if (v == null)
         {
             throw new NullPointerException();
-        } else
+        } 
+        else
         {
-//            Vertex v1 = new Vertex(v);
             v.setNodeID(count);
-                count++;
+            count++;
             vertices.add(v);
             return true;
         }
@@ -87,21 +86,16 @@ public class Graph
             v1.addNeighbor(temp);
             v2.addNeighbor(temp);
             return true;
-
         }
-        //return v1.addNeighbor(v2) && v2.addNeighbor(v1);
     }
 
     public Vertex getVertexByID(int id)
     {
-//        System.out.println("out id: "+id);
         for (Vertex v : predVertices)
         {
             Node temp = v.getNode();
             if (temp.getID() == id)
-            {
-                
-//                System.out.println("id: "+temp.getID());
+            {               
                 return v;
             }
         }
@@ -116,14 +110,14 @@ public class Graph
             if (v.getNode().isClause)
             {
                 System.out.print(" Clause\t" + v.getNode().getID());
-            } else
+            } 
+            else
             {
                 System.out.print(" Predicate\t" + v.getNode().getID());
             }
             ArrayList<Edge> neighbors = v.getNeighbors();
             for (Edge n : neighbors)
             {
-                
                 if (n.getNeighborVertex(v).getNode().isClause)
                 {
                     System.out.print("\n\tClause\t" + n.getNeighborVertex(v).getNode().getID());
@@ -133,7 +127,6 @@ public class Graph
                 }
             }
             System.out.println();
-//            System.out.print("\nVertice"+v.getNode().getClass());
         }
 
         System.out.println("\n" + vertices.size() + "\n\n\n");
@@ -149,22 +142,18 @@ public class Graph
     public Vertex getRandomVertex()
     {
         randomVertex=vertices.get(0);
-//        randomVertexCluster();
         return randomVertex;
     }
 
 
     public Edge getEdge(Vertex v, Vertex v1)
-    {
-        
-        
-            ArrayList<Edge> n = v.getNeighbors();
-//            System.out.println(n.size());
-            for(Edge e : n)
-            {
-                if(v1.equals(e.getNeighborVertex(v)))
-                    return e;
-            }
+    {        
+        ArrayList<Edge> n = v.getNeighbors();
+        for(Edge e : n)
+        {
+            if(v1.equals(e.getNeighborVertex(v)))
+                return e;
+        }
         
         return null;
     }
