@@ -13,7 +13,7 @@ import java.util.ArrayList;
  *
  * @author shrutika
  */
-public class FactorGraph
+public class FactorGraph<FG>
 {
 //    private Pseudograph<Node, DefaultEdge> graph ;
 
@@ -28,7 +28,7 @@ public class FactorGraph
     {
 
         graph = new Graph();
-        ArrayList<Node> preds = new ArrayList<Node>();
+        ArrayList<Node> preds = new ArrayList();
         for (Predicate p : Predicates)
         {
             Node temp = new PredicateNode(p);
@@ -61,6 +61,9 @@ public class FactorGraph
             }
 
         }
+
+//        graph.printVertices();
+//        System.out.println("\nafter DFS\n");
     }
     
     public Graph getGraph()

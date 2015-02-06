@@ -13,7 +13,7 @@ import java.util.ArrayList;
  * @author shrutika
  */
 class PMessage {
-    ArrayList<String> msg = new ArrayList<String>();
+    ArrayList<String> msg = new ArrayList();
 //    int hashCode;
 
     void addClauseMsgToPredicate(String s) {

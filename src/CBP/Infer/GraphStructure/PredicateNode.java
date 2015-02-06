@@ -20,14 +20,13 @@ public class PredicateNode extends Node
         this.p=p;
         this.isClause = false;
     }
-
     public int getID()
     {
        return p.getID();
     }
-
     public Predicate getPredicate()
     {
+//        System.out.println("hello in get");
         return p;
     }
 }

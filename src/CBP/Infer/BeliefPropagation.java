@@ -28,6 +28,7 @@ public class BeliefPropagation
     private final ArrayList<Predicate> preds;
     private final ArrayList<Clause> clauses;
     private int iteration = 1;
+    private boolean convergence = false;
     private boolean msgChanged = true;
     private final FactorGraph fg;
     private final Graph g;
@@ -55,7 +56,11 @@ public class BeliefPropagation
             if (v.getNode().isClause)
             {
                 //Clauses
+//                System.out.println(" Clause\t" + v.getNode().getID());
                 Clause c = v.getClause();
+
+//                                System.out.println(k);
+                int j = 0;
                 for (Edge n : neighbors)
                 {
                     //predicates;
@@ -65,6 +70,7 @@ public class BeliefPropagation
                     double productT = 1.0;
                     double productF = 1.0;
                     Predicate p = n.getNeighborVertex(v).getPredicate();
+//                    int k = c.getIdenticalMsgs(j) * p.getClusterSize();
 
                     if (p.hasEvidence())
                     {
@@ -75,9 +81,9 @@ public class BeliefPropagation
                         {
                             True = 0.0;
                         }
-                    } 
-                    else
+                    } else
                     {
+
                         if (n.getSign())
                         {
                             False = 0;
@@ -92,6 +98,7 @@ public class BeliefPropagation
                         {
                             if (!n.equals(e))
                             {
+//                                Vertex v2 = e.getNeighborVertex(v);
                                 Predicate p2 = e.getNeighborVertex(v).getPredicate();
 
                                 if (p2.hasEvidence())
@@ -203,7 +210,6 @@ public class BeliefPropagation
         }
     }
 
-    /*
     private Predicate getPred(Integer pid)
     {
         for (Predicate p : preds)
@@ -231,7 +237,6 @@ public class BeliefPropagation
 
     }
 
-    */
     
     public void printPredIds()
     {

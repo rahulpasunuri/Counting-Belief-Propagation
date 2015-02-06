@@ -64,7 +64,7 @@ public class Compress
 
     private void initializeClauses()
     {
-        clauses = new ArrayList<Clause>();
+        clauses = new ArrayList();
         try
         {
             String evi = "";
@@ -79,7 +79,7 @@ public class Compress
                 String lits = rs.getString("lits");
 
                 ArrayList<Integer> lit = parseLiterals(lits);
-                ArrayList<Integer> tempCluster = new ArrayList<Integer>();
+                ArrayList<Integer> tempCluster = new ArrayList();
                 tempCluster.add(id);
                 CMessage m = new CMessage();
                 Clause temp;
@@ -98,7 +98,7 @@ public class Compress
 
     private ArrayList<Integer> parseLiterals(String x)
     {
-        ArrayList<Integer> al = new ArrayList<Integer>();
+        ArrayList<Integer> al = new ArrayList();
         String temp[] = x.split("\\{");
         temp = temp[1].split("\\}");
 
@@ -116,7 +116,7 @@ public class Compress
 
     private void initilalizePredicates()
     {
-        predicates = new ArrayList<Predicate>();
+        predicates = new ArrayList();
 
         try
         {
@@ -253,12 +253,12 @@ public class Compress
 //        currentClauseList.clear();
 
 //        System.out.println("Assigning new Clause Colors");
-        ArrayList<Integer> ids = new ArrayList<Integer>();
+        ArrayList<Integer> ids = new ArrayList();
 
         int id = 0;
 //        ids.add(0);
         String msg = " ";
-        ArrayList<String> colors = new ArrayList<String>();
+        ArrayList<String> colors = new ArrayList();
         int cID = 65;
 
         for (Clause c : clauses)
@@ -346,10 +346,10 @@ public class Compress
 
 //        ASCII Code for A = 65, Z=90
         //Collections.sort(predicates);
-        ArrayList<Integer> ids = new ArrayList<Integer>();
+        ArrayList<Integer> ids = new ArrayList();
 //        ids.add(0);
         int id = 0;
-        ArrayList<String> colors = new ArrayList<String>();
+        ArrayList<String> colors = new ArrayList();
         char cID = 64;
 //        System.out.println("preds");
         for (Predicate p : predicates)
@@ -492,8 +492,8 @@ public class Compress
     {
         System.out.println("In Compression");
 
-        ArrayList<String> colors = new ArrayList<String>();
-        ArrayList<String> cColors = new ArrayList<String>();
+        ArrayList<String> colors = new ArrayList();
+        ArrayList<String> cColors = new ArrayList();
 
 //       int id=0;
         for (Predicate p : predicates)
@@ -532,9 +532,9 @@ public class Compress
                     clause.clusters.add(clause.id);
                 }
 
-                ArrayList<Integer> newLits = new ArrayList<Integer>();
+                ArrayList<Integer> newLits = new ArrayList();
                 int l = 0;
-                ArrayList<Predicate> lits = new ArrayList<Predicate>();
+                ArrayList<Predicate> lits = new ArrayList();
                 for (int k : clause.literals)
                 {
 //                    Predicate pTemp = getPred(Math.abs(k));
@@ -585,11 +585,11 @@ public class Compress
     {
 //        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 
-        clauses = new ArrayList<Clause>();
-        predicates = new ArrayList<Predicate>();
-        ArrayList<Integer> al = new ArrayList<Integer>();
+        clauses = new ArrayList();
+        predicates = new ArrayList();
+        ArrayList<Integer> al = new ArrayList();
         al.add(1);
-        ArrayList<Integer> al1 = new ArrayList<Integer>();
+        ArrayList<Integer> al1 = new ArrayList();
         al1.add(1);
         al1.add(2);
         al1.add(3);

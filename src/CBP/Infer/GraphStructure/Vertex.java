@@ -14,7 +14,7 @@ import java.util.ArrayList;
  *
  * @author shrutika
  */
-public class Vertex
+public class Vertex<V>
 {
     
     private int nodeID=0;
@@ -28,7 +28,7 @@ public class Vertex
     public Vertex(Node n)
     {
         node = n;
-        neighbors = new ArrayList<Edge>();
+        neighbors = new ArrayList();
     }
     
     public Node getNode()
@@ -49,10 +49,12 @@ public class Vertex
     {
         if(e==null)
         {
+//            System.out.println("\n\n\n\n\nnull neighbor");
             throw new NullPointerException();
         }
         else
         {
+//            System.out.println("\n\n\n\n\n neighbor added");
             neighbors.add(e);
             return true;
         }

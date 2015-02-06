@@ -35,7 +35,8 @@ public class Node
     public void printIfClause()
     {
         if(isClause)
-        {            
+        {
+            
             System.out.print("Clause: ");
         }
         else
