@@ -30,10 +30,6 @@ public class Compression
     Grounding grounding;
     private int iterationCount=0;
     //private DatabaseConnector dc;
-    private ArrayList<Clause> currentCLauseList;
-    private ArrayList<Predicate> currentPredicateList;
-    private ArrayList<Clause> previousCLauseList;
-    private ArrayList<Predicate> previousPredicateList;
     private final Compress c;
     private String queryAtoms;
     
@@ -41,24 +37,15 @@ public class Compression
 
     public Compression(Grounding g, String s, long stat, int noOfIterations)
     {
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-//        System.out.println("Started0");
-        //long startTime = System.nanoTime();
         grounding = g;
         mln = g.getMLN();
         db = mln.getRDB();
         db.schema = Config.db_schema;
-//        printAllTablesinSchema();
         new ParseEvidence(db).parse(s,mln);
-//        System.out.println("Evidence parsed");
         //dc = new DatabaseConnector(db,mln);
         
         c= new Compress(db,mln,noOfIterations);
-//        System.out.println("Started");
-        //printAllTablesinSchema();
         //Compress();
-
-
     }
     
     public void runBP() throws IOException
@@ -66,14 +53,12 @@ public class Compression
         ArrayList<Clause> cl = c.getCompressedClauses();
         ArrayList<CBP.Compression.Predicate> pd = c.getCompressedPreds();
         BeliefPropagation bp;
-//        bp = new BeliefPropagation(preds, cl);
-//        System.out.println("Query Atoms: "+queryAtoms);
-         bp = new BeliefPropagation(pd, cl);
+    	bp = new BeliefPropagation(pd, cl);
 //         ArrayList<Integer> iQuerys=new EstimateQuery(db).parse(queryAtoms,mln);
          bp.computeProbabilities();
         
     }
-
+/*
     public void printAllTablesinSchema()
     {
         try
@@ -117,6 +102,7 @@ public class Compression
         }
     }
     
+ 
     public void Compress()
     {
         //mln0_clauses
@@ -138,13 +124,10 @@ public class Compression
     }
     
     private boolean convergence()
-    {
-        
-        
-        
+    {                
         return false;
     }
-
+*/
    
 
     public void setQueryAtoms(String query)
