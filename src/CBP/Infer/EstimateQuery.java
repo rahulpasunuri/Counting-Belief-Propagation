@@ -126,24 +126,13 @@ public class EstimateQuery
             try
             {
                 strings[i] = strings[i].trim();
-                //Statement statement = (Statement) connection.createStatement();
                 String sql = "SELECT id FROM constants WHERE string='" + strings[i] + "'";
                 ResultSet rs = db.query(sql);
-
-                //System.out.println("Strings  "+strings[i]);
-                //System.out.println("sql  "+sql);
                 
                 while (rs.next())
                 {
-                    //System.out.println("Table Name : " + rs.getString(1));
-
-                    //String sql1 = "Select * from " + rs.getString(1);
                     int id = Integer.parseInt(rs.getString("id"));
-//                    System.out.println(id);
                     ids.add(id);
-
-                    //System.out.println(id);
-
                 }
             } catch (Exception e)
             {
@@ -156,9 +145,6 @@ public class EstimateQuery
 
     private int getQueryIds(String a, String b, ArrayList<Integer> id)
     {
-//        System.out.println(a);
-//        System.out.println(b);
-        
         int ids =0;
 
         String knownColumns[] =
@@ -179,7 +165,6 @@ public class EstimateQuery
             for (int i = 9; i <= n; i++)
             {
                 cols.add(rsmd.getColumnName(i));
-//                System.out.println(rsmd.getColumnName(i));
             }
 
         } catch (Exception e)
@@ -187,11 +172,9 @@ public class EstimateQuery
             System.out.println(e);
         }
 
-//        System.out.println(p.getName()+" "+a);
         if (p.getName().equalsIgnoreCase(a))
         {
             String sql1 = "Select atomid from "+ p.getRelName() + " where "; 
-               //System.out.println(cols.size());
             for (int i = 0; i<cols.size(); i++)
             {
                 sql1 = sql1 + cols.get(i) + " = " + id.get(i);
@@ -200,26 +183,18 @@ public class EstimateQuery
                     continue;
                 }
                 sql1 = sql1 + " AND ";
-            }
-            
-//            System.out.println(sql1);
+            }            
 
            
             try
             {
                 ResultSet rs1 = db.query(sql1);
                 while(rs1.next())
-                {
-                    
-                    
+                {                                       
                         int k = rs1.getInt(1);
-//                        System.out.println(k);
-                        ids=k;
+                        ids=k;                    
                     
-                    
-                    
-                }
-//               
+                }               
             } catch (Exception e)
             {
                 System.out.println(e);

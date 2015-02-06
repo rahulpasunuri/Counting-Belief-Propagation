@@ -44,8 +44,4 @@ public class FactorNode extends Node
     {
         return c;
     }
-//    public getClauseBools()
-//    {
-//        
-//    }
 }

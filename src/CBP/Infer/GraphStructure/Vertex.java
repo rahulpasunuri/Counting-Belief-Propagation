@@ -14,7 +14,7 @@ import java.util.ArrayList;
  *
  * @author shrutika
  */
-public class Vertex<V>
+public class Vertex
 {
     
     private int nodeID=0;
@@ -28,7 +28,7 @@ public class Vertex<V>
     public Vertex(Node n)
     {
         node = n;
-        neighbors = new ArrayList();
+        neighbors = new ArrayList<Edge>();
     }
     
     public Node getNode()

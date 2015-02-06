@@ -29,7 +29,7 @@ public class Compression
     RDB db;
     Grounding grounding;
     private int iterationCount=0;
-    //private DatabaseConnector dc;
+    //private DatabaseConnector dc;s
     private final Compress c;
     private String queryAtoms;
     

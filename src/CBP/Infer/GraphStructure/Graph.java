@@ -17,15 +17,15 @@ public class Graph
 
     private final ArrayList<Vertex> vertices;
     private final ArrayList<Edge> edges;
-    private ArrayList<Vertex> predVertices = new ArrayList();
+    private ArrayList<Vertex> predVertices = new ArrayList<Vertex>();
 //    public ArrayList<CopyClusters> copyNodes = new ArrayList();
-    private ArrayList<Vertex> randomVertexCluster= new ArrayList();
+    private ArrayList<Vertex> randomVertexCluster= new ArrayList<Vertex>();
     private int count=1;
     private Vertex randomVertex;
     public Graph()
     {
-        vertices = new ArrayList();
-        edges = new ArrayList();
+        vertices = new ArrayList<Vertex>();
+        edges = new ArrayList<Edge>();
     }
 
         public ArrayList<Vertex> getVertices()
