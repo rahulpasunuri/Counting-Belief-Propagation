@@ -41,7 +41,6 @@ public class BeliefPropagation
         g = fg.getGraph();
         vertices = g.getVertices();
         run();
-
     }
 
     void factorGraphBP()
@@ -58,7 +57,6 @@ public class BeliefPropagation
                 for (Edge n : neighbors)
                 {
                     //predicates;
-
                     double True = 1.0;
                     double False = 1.0;
                     double productT = 1.0;
@@ -70,7 +68,8 @@ public class BeliefPropagation
                         if (p.getEvidence())
                         {
                             False = 0.0;
-                        } else
+                        } 
+                        else
                         {
                             True = 0.0;
                         }
@@ -99,7 +98,8 @@ public class BeliefPropagation
                                     if (p2.getEvidence())
                                     {
                                         productF = 0;
-                                    } else
+                                    } 
+                                    else
                                     {
                                         productT = 0;
 
@@ -125,10 +125,10 @@ public class BeliefPropagation
                         msgChanged = true;
                     }
                     n.setPredmsg(m2);
-
                 }
 
-            } else
+            } 
+            else
             {
                 for (Edge n : neighbors)
                 {
@@ -165,7 +165,8 @@ public class BeliefPropagation
                                 {
                                     t = t * n1.getClausemsg().True;
                                     f = f * n1.getClausemsg().False;
-                                } else
+                                }
+                                else
                                 {
                                     k--;
                                 }
