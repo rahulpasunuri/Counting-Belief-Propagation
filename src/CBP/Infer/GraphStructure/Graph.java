@@ -28,10 +28,10 @@ public class Graph
         edges = new ArrayList<Edge>();
     }
 
-        public ArrayList<Vertex> getVertices()
-        {
-            return vertices;
-        }
+    public ArrayList<Vertex> getVertices()
+    {
+        return vertices;
+    }
         
         
     public boolean addVertex(Vertex v)
@@ -39,11 +39,12 @@ public class Graph
         if (v == null)
         {
             throw new NullPointerException();
-        } else
+        } 
+        else
         {
 //            Vertex v1 = new Vertex(v);
             v.setNodeID(count);
-                count++;
+            count++;
             vertices.add(v);
             return true;
         }
@@ -76,10 +77,10 @@ public class Graph
     {
         if (v1.equals(v2))
         {
-            System.out.println("Tried adding edge"
-                    + " between identical vertices");
+            System.out.println("Tried adding edges between identical vertices");
             return false;
-        } else
+        } 
+        else
         {
             Edge temp = new Edge(v1, v2);
             temp.setSign(t);
@@ -87,21 +88,16 @@ public class Graph
             v1.addNeighbor(temp);
             v2.addNeighbor(temp);
             return true;
-
         }
-        //return v1.addNeighbor(v2) && v2.addNeighbor(v1);
     }
 
     public Vertex getVertexByID(int id)
     {
-//        System.out.println("out id: "+id);
         for (Vertex v : predVertices)
         {
             Node temp = v.getNode();
             if (temp.getID() == id)
-            {
-                
-//                System.out.println("id: "+temp.getID());
+            {                
                 return v;
             }
         }
@@ -116,7 +112,8 @@ public class Graph
             if (v.getNode().isClause)
             {
                 System.out.print(" Clause\t" + v.getNode().getID());
-            } else
+            } 
+            else
             {
                 System.out.print(" Predicate\t" + v.getNode().getID());
             }
@@ -133,7 +130,6 @@ public class Graph
                 }
             }
             System.out.println();
-//            System.out.print("\nVertice"+v.getNode().getClass());
         }
 
         System.out.println("\n" + vertices.size() + "\n\n\n");
@@ -149,7 +145,6 @@ public class Graph
     public Vertex getRandomVertex()
     {
         randomVertex=vertices.get(0);
-//        randomVertexCluster();
         return randomVertex;
     }
 
@@ -159,7 +154,6 @@ public class Graph
         
         
             ArrayList<Edge> n = v.getNeighbors();
-//            System.out.println(n.size());
             for(Edge e : n)
             {
                 if(v1.equals(e.getNeighborVertex(v)))

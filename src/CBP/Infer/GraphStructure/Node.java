@@ -15,7 +15,6 @@ import CBP.Compression.Predicate;
  */
 public class Node
 {
-	// dfgdf
     private double message =1.0;
     public boolean isClause=false;
     
@@ -25,7 +24,6 @@ public class Node
      */
     public int getID()
     {
-        //System.out.print("''");
        return 0; 
     }
     
@@ -45,7 +43,6 @@ public class Node
 
     Predicate getPredicate()
     {
-//        System.out.println("My name ");
         return null; //To change body of generated methods, choose Tools | Templates.
     }
 

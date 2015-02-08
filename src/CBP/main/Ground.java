@@ -75,7 +75,7 @@ public abstract class Ground {
 	{
 		options = opt;
 		Timer.resetClock();
-
+		
 		Clause.mappingFromID2Const = new HashMap<Integer, String>();
 		Clause.mappingFromID2Desc = new HashMap<String, String>();
 		
@@ -91,10 +91,11 @@ public abstract class Ground {
 
 		mln.materializeTables();
 		
+		//what is kbmc ???
 		KBMC kbmc = new KBMC(mln);
 		kbmc.run();
-		mln.executeAllDatalogRules();
-		mln.applyAllScopes();
+		mln.executeAllDatalogRules(); //???
+		mln.applyAllScopes(); //what does this do ??
 		UIMan.verbose(1, ">>> Marking queries...");
 		mln.storeAllQueries();
 		
@@ -111,7 +112,10 @@ public abstract class Ground {
 		}
 	}
 	
-	protected void setUp_noloading(CommandOptions opt){
+	/*
+	 * Not used method..
+	protected void setUp_noloading(CommandOptions opt)
+	{
 		options = opt;
 		Timer.resetClock();
 
@@ -122,6 +126,7 @@ public abstract class Ground {
 		db = RDB.getRDBbyConfig();
 		
 	}
+	*/
 	
 	/**
 	 * Clean up temporary data: the schema in PostgreSQL and the working directory.

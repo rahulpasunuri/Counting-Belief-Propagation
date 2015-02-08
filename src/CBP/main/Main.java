@@ -22,7 +22,7 @@ public class Main
 
     public static void main(String[] args) throws SQLException, IOException
     {    	    
-    	
+    	//parse the input options..
         CommandOptions options = UIMan.parseCommand(args);
         UIMan.println("*** Welcome to " + Config.product_name + "!");
         if (options == null)
@@ -30,11 +30,18 @@ public class Main
             return;
         }
 
+        Config.keep_db_data =true;//TODO: Remove this.
+        
+        //mark all atoms as active for CBP
+        Config.mark_all_atoms_active=true;
+        
+        //we should not partition for CBP
+        Config.disable_partition =true;
+        
         if (!options.isDLearningMode)
         {            
             long startTime = System.nanoTime();
-            new Grounding().run(options,startTime);
-            
+            new Grounding().run(options,startTime);            
         } 
     }
 

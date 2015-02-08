@@ -49,12 +49,10 @@ public class Vertex
     {
         if(e==null)
         {
-//            System.out.println("\n\n\n\n\nnull neighbor");
             throw new NullPointerException();
         }
         else
         {
-//            System.out.println("\n\n\n\n\n neighbor added");
             neighbors.add(e);
             return true;
         }

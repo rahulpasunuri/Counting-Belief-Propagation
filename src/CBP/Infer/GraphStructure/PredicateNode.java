@@ -26,7 +26,6 @@ public class PredicateNode extends Node
     }
     public Predicate getPredicate()
     {
-//        System.out.println("hello in get");
         return p;
     }
 }

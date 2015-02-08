@@ -37,10 +37,10 @@ public class Grounding extends Ground
     {
         
         UIMan.println(">>> Parsing the Files for Grounding.....");
-
         setUp(opt);
-        UIMan.println("\n\n>>> Before Ground.....");
+        
         ground();
+        UIMan.println("\n\n>>> Grounding completed.....");
         
         Compression cp = new Compression(grounding, opt.addEvidence,start, opt.noOfIterations);
         cp.setQueryAtoms(opt.fquery);
