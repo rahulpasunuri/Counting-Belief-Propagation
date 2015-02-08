@@ -37,7 +37,6 @@ public class BeliefPropagation
     {
         preds = p;
         clauses = c;
-//        System.out.println("size of preds: " + preds.size());
         fg = new FactorGraph(preds, clauses);
         g = fg.getGraph();
         vertices = g.getVertices();
@@ -158,10 +157,8 @@ public class BeliefPropagation
                             double t, f;
                             t = f = 1;
 
-//                            int j=0;
                             for (Edge n1 : neighbors)
                             {
-//                                System.out.println("size of lits: "+n1.getNeighborVertex(v).getClause().getLiterals().size()+" "+j);
                                 int k = n1.getNeighborVertex(v).getClause().getIdenticalMsgs(v.getPredicate().getID()) * v.getPredicate().getClusterSize();
                                 if (!n.equals(n1))
                                 {
@@ -173,7 +170,7 @@ public class BeliefPropagation
                                 }
                                 t = Math.pow(t, k);
                                 f = Math.pow(f, k);
-//                                j++;
+
                             }
                             m.True = t;
                             m.False = f;
