@@ -8,7 +8,6 @@ package CBP.Compression;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import tuffy.db.RDB;
 import tuffy.mln.MarkovLogicNetwork;
 import tuffy.mln.Predicate;
@@ -114,8 +113,6 @@ public class DatabaseConnector
     {
         try
         {
-            String evi = "";
-            int count = 0;
             ResultSet rs = db.query("Select cid,lits,weight from mln0_clauses");
             while (rs.next())
             {
@@ -222,7 +219,6 @@ public class DatabaseConnector
         try
         {
             String sql = "Select * from " + tableName + " order by message";
-            //System.out.println(sql);
             ResultSet rs = db.query(sql);
             String msg = "";
             ArrayList<Integer> atoms;

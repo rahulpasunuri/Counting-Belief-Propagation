@@ -35,13 +35,10 @@ public class Compress
 
     public Compress(RDB db1, MarkovLogicNetwork mln1, int noOfIterations)
     {
-//        System.out.println("\n\nhello\n\n");
         db = db1;
         mln = mln1;
         k = noOfIterations;
         init();
-        //initializeTables();
-//throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     private void init()
@@ -51,35 +48,24 @@ public class Compress
         System.out.println("Clauses initialized");
         initilalizePredicates();
         System.out.println("IPreds initialised");
-//        testGraph();
-        long startTime = System.nanoTime();
-
         colorPassing();
-        long endTime = System.nanoTime();
-
-//        System.out.println("Time for color passing: "+Math.abs(startTime-endTime)/1000000000.0);
         compression();
-
     }
 
     private void initializeClauses()
     {
-        clauses = new ArrayList();
+        clauses = new ArrayList<Clause>();
         try
         {
-            String evi = "";
-            int count = 0;
             ResultSet rs = db.query("Select cid,lits,weight from mln0_clauses");
             while (rs.next())
             {
                 int id = rs.getInt("cid");
                 double weight = rs.getDouble("weight");
-                //System.out.println(id+" ");
-                //String hasEvidence=rs.getString("");
                 String lits = rs.getString("lits");
 
                 ArrayList<Integer> lit = parseLiterals(lits);
-                ArrayList<Integer> tempCluster = new ArrayList();
+                ArrayList<Integer> tempCluster = new ArrayList<Integer>();
                 tempCluster.add(id);
                 CMessage m = new CMessage();
                 Clause temp;
@@ -98,17 +84,14 @@ public class Compress
 
     private ArrayList<Integer> parseLiterals(String x)
     {
-        ArrayList<Integer> al = new ArrayList();
+        ArrayList<Integer> al = new ArrayList<Integer>();
         String temp[] = x.split("\\{");
         temp = temp[1].split("\\}");
 
         temp[0] = temp[0].replace(",", " ");
-
-        //System.out.println("\nlits: "+temp[0]);
         String lits[] = temp[0].split(" ");
         for (String lit : lits)
         {
-            //System.out.println(lit);
             al.add(Integer.parseInt(lit));
         }
         return al;
@@ -116,29 +99,17 @@ public class Compress
 
     private void initilalizePredicates()
     {
-        predicates = new ArrayList();
+        predicates = new ArrayList<Predicate>();
 
         try
         {
-            String evi = "";
-            int count = 0;
-            //int flag=0;
             ResultSet rs = db.query("Select isquery,atomid,truth from mln0_atoms order by atomid");
             while (rs.next())
             {
-                //System.out.println("asd");
-//                int id = rs.getInt("predid");
-//                System.out.println(id);
                 int aid = rs.getInt("atomid");
                 String truth = rs.getString("truth");
                 String c;
                 boolean iquery = rs.getBoolean("isquery");
-//                if(iquery)
-//                {
-//                    System.out.println("yes query is "+iquery);
-//                }
-                //System.out.println(truth);
-                //evi = rs1.getString("truth");
                 boolean ae = false;
                 boolean e = false;
                 if (truth == null)
@@ -151,12 +122,10 @@ public class Compress
                     {
                         c = "T";
                         e = true;
-//                        System.out.println("Tr");
                     } else
                     {
                         c = "F";
                         e = false;
-//                        System.out.println("Hello False" + aid);
                         abc = aid;
                     }
                 }
@@ -181,8 +150,6 @@ public class Compress
         {
             System.out.println(e);
         }
-
-//        System.out.println(predicates.size());
     }
 
     private void updateMessages()
@@ -192,7 +159,6 @@ public class Compress
         {
             c.msg.s = "";
             ArrayList<Integer> lits = c.literals;
-            //String m = "";
             for (int i : lits)
             {
                 String temp = getPred((Math.abs(i))).color;
@@ -210,62 +176,30 @@ public class Compress
                 {
                     temp = "N" + temp;
                 }
-                //System.out.println(temp);
                 c.msg.addliteralMessage(temp);
             }
 
-//            String temp1 = clause.color;
             c.msg.addliteralMessage(c.color);
-//            System.out.println(c.msg.s);
             for (int i : lits)
             {
-//                System.out.println(i);
                 getPred((Math.abs(i))).msg.msg.add(c.msg.s);
-
-//                for(String s: getPred((Math.abs(i))).msg.msg)
-//                    System.out.print("\t"+s+" ");
-//            System.out.println();
             }
             //addClauseMsgToPredicate();
-        }
-
-//        System.out.println("Printing messages");
-//        
-//        for(Clause c: clauses)
-//        {
-//            System.out.println(c.id+"\t"+c.msg.s);
-//        }
-//        
-//        
-//        for(Predicate c: predicates)
-//        {
-//            System.out.print(c.id+"\t");
-//            for(String s: c.msg.msg)
-//                System.out.print(s+" ");
-//            System.out.println();
-//        }
-//        
-//        
+        }        
     }
 
     private void assignNewClauseColors()
     {
-//        currentClauseList.clear();
-
-//        System.out.println("Assigning new Clause Colors");
         ArrayList<Integer> ids = new ArrayList();
 
         int id = 0;
-//        ids.add(0);
         String msg = " ";
         ArrayList<String> colors = new ArrayList();
         int cID = 65;
 
         for (Clause c : clauses)
         {
-//            System.out.println(c.msg.s);
             int hash = c.msg.s.hashCode();
-//            System.out.println(hash);
             if (!ids.contains(hash))
             {
 //                This implies that the messageis not seen before
@@ -288,7 +222,6 @@ public class Compress
                     {
                         if (!nColor.contains("[0-9") && cID <= 91)
                         {
-//                            System.out.println("I am the problem"+nColor);
                             nColor = Character.toString((char) cID);
                             nColor = "C" + nColor;
                             cID++;
@@ -301,8 +234,6 @@ public class Compress
                             nColor = nColor + t;
                         }
 
-//                        nColor = nColor.replaceAll("[0-9]", "");
-//                        System.out.println(nColor);
                     } else
                     {
 
@@ -337,8 +268,6 @@ public class Compress
             c.msg.s = "";
 
         }
-
-//        System.out.println("end of assign");
     }
 
     private void assignNewPredColors()
@@ -346,32 +275,21 @@ public class Compress
 
 //        ASCII Code for A = 65, Z=90
         //Collections.sort(predicates);
-        ArrayList<Integer> ids = new ArrayList();
-//        ids.add(0);
+        ArrayList<Integer> ids = new ArrayList();;
         int id = 0;
         ArrayList<String> colors = new ArrayList();
         char cID = 64;
-//        System.out.println("preds");
         for (Predicate p : predicates)
         {
             cID++;
             ArrayList<String> msg = p.msg.msg;
             Collections.sort(msg);
-
-//            for(String s: msg)
-//                System.out.print(s+"  X  ");
-//            System.out.println();
             int hash = msg.hashCode();
-//            System.out.println(hash);
 
             if (!ids.contains(hash))
             {
-//                ids.add(hash);
-
                 String nColor = String.valueOf((cID));
                 nColor = "P" + nColor;
-//                System.out.println(absghf);
-
                 int t = 0;
                 while (true)
                 {
@@ -381,7 +299,6 @@ public class Compress
                     {
                         if (!nColor.contains("[0-9") && cID <= 91)
                         {
-//                            System.out.println("I am the problem"+nColor);
                             nColor = Character.toString((char) cID);
                             nColor = "C" + nColor;
                             cID++;
@@ -395,7 +312,6 @@ public class Compress
                         }
 
 //                        nColor = nColor.replaceAll("[0-9]", "");
-//                        System.out.println(nColor);
                     } else
                     {
 
@@ -407,8 +323,6 @@ public class Compress
 
                 ids.add(hash);
                 colors.add(nColor);
-//                System.out.println(absghf);
-//                absghf++;
                 p.color = nColor;
                 if (!p.oldColor.equals(p.color))
                 {
@@ -417,9 +331,7 @@ public class Compress
                 p.oldColor = p.color;
             } else
             {
-//                System.out.println(ids.indexOf(h));
                 int x = ids.indexOf(hash);
-//                System.out.println("index "+x+"Size: "+ids.size());
                 String nColor = colors.get(x);
                 p.color = nColor;
                 if (!p.oldColor.equals(p.color))
@@ -438,19 +350,14 @@ public class Compress
     private void colorPassing()
     {
         int i = 1;
-//        System.out.println("In color passing");
         if (k >= 10)
         {
             while (colorChanged)
             {
                 colorChanged = false;
                 updateMessages();
-//            System.out.println("Messages updates");
                 assignNewPredColors();
                 assignNewClauseColors();
-//            System.out.println(colorChanged);
-//            if(i==1)
-//                break;
                 i++;
             }
             System.out.println("# of iterations: " + i);
@@ -460,23 +367,18 @@ public class Compress
             {
                 colorChanged = false;
                 updateMessages();
-//            System.out.println("Messages updates");
                 assignNewPredColors();
                 assignNewClauseColors();
-//            System.out.println(colorChanged);
-            if(i==k)
-                break;
+                if(i==k)
+                	break;
                 i++;
             }
             System.out.println("# of iterations: " + i);
         }
-
-//        compression();
     }
 
     private Predicate getPred(Integer pid)
     {
-//        System.out.println("PID: "+pid);
         for (Predicate p : predicates)
         {
             if (p.id == pid)
@@ -495,10 +397,8 @@ public class Compress
         ArrayList<String> colors = new ArrayList();
         ArrayList<String> cColors = new ArrayList();
 
-//       int id=0;
         for (Predicate p : predicates)
         {
-//            System.out.println(p.color);
             if (!colors.contains(p.color))
             {
                 colors.add(p.color);
@@ -532,12 +432,11 @@ public class Compress
                     clause.clusters.add(clause.id);
                 }
 
-                ArrayList<Integer> newLits = new ArrayList();
+                ArrayList<Integer> newLits = new ArrayList<Integer>();
                 int l = 0;
-                ArrayList<Predicate> lits = new ArrayList();
+                ArrayList<Predicate> lits = new ArrayList<Predicate>();
                 for (int k : clause.literals)
                 {
-//                    Predicate pTemp = getPred(Math.abs(k));
                     for (Predicate p : preds)
                     {
                         if (p.clusters.contains(Math.abs(k)))
@@ -564,13 +463,11 @@ public class Compress
             } else
             {
                 int i = cColors.indexOf(clause.color);
-//                System.out.println(cl.size()+"  "+i);
                 Clause c1 = cl.get(i);
                 if (!c1.clusters.contains(clause.id))
                 {
                     c1.clusters.add(clause.id);
                 }
-//                c1.noOfIdenticalMsgs++;
             }
         }
 
@@ -583,13 +480,11 @@ public class Compress
 
     private void testGraph()
     {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-
-        clauses = new ArrayList();
-        predicates = new ArrayList();
-        ArrayList<Integer> al = new ArrayList();
+        clauses = new ArrayList<Clause>();
+        predicates = new ArrayList<Predicate>();
+        ArrayList<Integer> al = new ArrayList<Integer>();
         al.add(1);
-        ArrayList<Integer> al1 = new ArrayList();
+        ArrayList<Integer> al1 = new ArrayList<Integer>();
         al1.add(1);
         al1.add(2);
         al1.add(3);
@@ -624,20 +519,6 @@ public class Compress
 
         Predicate p2 = new Predicate(3, al, "PA", pm2,false);
         predicates.add(p2);
-
-//        System.out.println("Clauses");
-//        for(Clause c: clauses)
-//        {
-//            System.out.println(c.id+"\t"+c.color);
-//        }
-//        
-//        
-//        System.out.println("Predicates");
-//        for(Predicate c: predicates)
-//        {
-//            System.out.println(c.id+"\t"+c.color);
-//        }
-//        System.out.println("\n\n\n\n\n");
     }
 
     ArrayList<Clause> getCompressedClauses()

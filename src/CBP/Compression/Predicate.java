@@ -22,7 +22,7 @@ public class Predicate
     boolean hasEvidence=false;
     boolean evidence;
     boolean query=false;
-//    public ActualMessage aMsg = new ActualMessage();
+
     Predicate (int x, ArrayList<Integer> c, String col, PMessage m, boolean e, boolean q)
     {
         id = x;

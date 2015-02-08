@@ -132,7 +132,6 @@ public class Compression
 
     public void setQueryAtoms(String query)
     {
-//        System.out.println("\n\ninside set:"+query);
         queryAtoms = query;
     }
     

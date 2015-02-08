@@ -11,19 +11,13 @@ package CBP.Compression;
  * @author shrutika
  */
 class CMessage {
-    String s;
+    String s;    
     
-//    int hashCode;
-
     void addliteralMessage(String temp) 
     {
-         //To change body of generated methods, choose Tools | Templates.
-        //System.out.println("here");
         if(s == null)
             s=temp;
         else
             s = s+ " "+ temp;
-    }
-    
-    
+    }       
 }

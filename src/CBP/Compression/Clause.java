@@ -23,10 +23,10 @@ public class Clause
     String color="";
     String oldColor ="";
     int []noOfIdenticalMsgs;
-//    ArrayList <Integer> lits;
     
-//    public ArrayList <ActualMessage> msgToPredicate= new ArrayList();
-
+    /*
+     * x- clause id, c-cluster ids, l - literal ids, wt- weight, 
+     */
     Clause(int x, ArrayList<Integer> c, ArrayList<Integer> l, double wt, CMessage m, String clr)
     {
         id = x;
@@ -39,9 +39,6 @@ public class Clause
         noOfIdenticalMsgs = new int[literals.size()];
         
         Arrays.fill(noOfIdenticalMsgs, 1);
-//        initmsgToPredciate();
-       
-
     }
     
    
@@ -68,7 +65,7 @@ public class Clause
             t= literals.indexOf(j);
         else
         {
-            int k=j*-1;
+            int k=j*-1; //???
             t= literals.indexOf(k);
         }
         return noOfIdenticalMsgs[t];
