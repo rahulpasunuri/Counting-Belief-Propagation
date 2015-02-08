@@ -64,7 +64,6 @@ public class BeliefPropagation
                     double productT = 1.0;
                     double productF = 1.0;
                     Predicate p = n.getNeighborVertex(v).getPredicate();
-//                    int k = c.getIdenticalMsgs(j) * p.getClusterSize();
 
                     if (p.hasEvidence())
                     {
@@ -75,14 +74,15 @@ public class BeliefPropagation
                         {
                             True = 0.0;
                         }
-                    } else
+                    } 
+                    else
                     {
-
                         if (n.getSign())
                         {
                             False = 0;
                             True = c.getweight();
-                        } else
+                        } 
+                        else
                         {
                             True = 0;
                             False = c.getweight();
@@ -92,7 +92,6 @@ public class BeliefPropagation
                         {
                             if (!n.equals(e))
                             {
-//                                Vertex v2 = e.getNeighborVertex(v);
                                 Predicate p2 = e.getNeighborVertex(v).getPredicate();
 
                                 if (p2.hasEvidence())
@@ -145,13 +144,15 @@ public class BeliefPropagation
                             m.True = 0.0;
                             m.False = 1.0;
                         }
-                    } else
+                    } 
+                    else
                     {
                         if (iteration == 1)
                         {
                             m.False = 1.0;
                             m.True = 1.0;
-                        } else
+                        } 
+                        else
                         {
 
                             double t, f;

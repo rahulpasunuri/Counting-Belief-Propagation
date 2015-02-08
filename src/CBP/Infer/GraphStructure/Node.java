@@ -43,12 +43,12 @@ public class Node
 
     Predicate getPredicate()
     {
-        return null; //To change body of generated methods, choose Tools | Templates.
+        return null; 
     }
 
     Clause getClause()
     {
-        return null; //To change body of generated methods, choose Tools | Templates.
+        return null;
     }
     
 }

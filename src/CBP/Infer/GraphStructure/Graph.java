@@ -18,10 +18,7 @@ public class Graph
     private final ArrayList<Vertex> vertices;
     private final ArrayList<Edge> edges;
     private ArrayList<Vertex> predVertices = new ArrayList<Vertex>();
-//    public ArrayList<CopyClusters> copyNodes = new ArrayList();
-    private ArrayList<Vertex> randomVertexCluster= new ArrayList<Vertex>();
     private int count=1;
-    private Vertex randomVertex;
     public Graph()
     {
         vertices = new ArrayList<Vertex>();
@@ -42,30 +39,26 @@ public class Graph
         } 
         else
         {
-//            Vertex v1 = new Vertex(v);
             v.setNodeID(count);
             count++;
             vertices.add(v);
             return true;
         }
     }
-
-    /*
-     Have to write a methode for this
-     */
+	
+    
     public boolean addPredVertices(ArrayList<Node> nodes)
     {
         if (nodes == null)
         {
             throw new NullPointerException();
-        } else
+        } 
+        else
         {
             for (Node n : nodes)
             {
                 Vertex v = new Vertex(n);
-                v.setNodeID(count);
-                count++;
-                vertices.add(v);
+                addVertex(v);
                 predVertices.add(v);
             }
 
@@ -91,7 +84,7 @@ public class Graph
         }
     }
 
-    public Vertex getVertexByID(int id)
+    public Vertex getPredVertexByID(int id)
     {
         for (Vertex v : predVertices)
         {
@@ -142,17 +135,8 @@ public class Graph
         edges.add(e);
     }
 
-    public Vertex getRandomVertex()
-    {
-        randomVertex=vertices.get(0);
-        return randomVertex;
-    }
-
-
     public Edge getEdge(Vertex v, Vertex v1)
-    {
-        
-        
+    {               
             ArrayList<Edge> n = v.getNeighbors();
             for(Edge e : n)
             {
@@ -168,18 +152,15 @@ public class Graph
     {
         System.out.println("out id: "+id);
         for (Vertex v : predVertices)
-        {
-            
+        {            
             Predicate p = v.getPredicate();
             ArrayList<Integer> clusters = p.getClusters();
             for (int k: clusters)
             {
-                if(k==id)
-                
-                return v;
+                if(k==id)                
+                	return v;
             }
         }
         return null;
-    }
-    
+    }    
 }

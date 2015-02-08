@@ -20,11 +20,9 @@ public class FactorNode extends Node
     public FactorNode(Clause c)
     {
         this.c=c;
-    }
-    public void setClause()
-    {
         isClause=true;
     }
+
     @Override
     public int getID()
     {

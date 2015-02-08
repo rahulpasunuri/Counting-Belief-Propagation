@@ -30,7 +30,6 @@ public class EstimateQuery
     public EstimateQuery(RDB db1)
     {
         db = db1;
-//        System.out.println(db.schema);
     }
 
     public ArrayList<Query> parse(String s, MarkovLogicNetwork mln1)
@@ -44,29 +43,26 @@ public class EstimateQuery
         {
 
             String sCurrentLine;
-//            System.out.println("zee "+s);
             if(s!=null)
             {
                 br = new BufferedReader(new FileReader(s));
-            //System.out.println("\n\nread File\n\n");
-            while ((sCurrentLine = br.readLine()) != null)
-            {
-                sCurrentLine=sCurrentLine.trim();
-//                System.out.print(sCurrentLine);
-               int k= getPredname(sCurrentLine);
-               Query temp = new Query();
-               temp.id=k;
-               temp.query=sCurrentLine;
-               ids.add(temp);
-//               ids.add(k);
-//               q.add(sCurrentLine);
-//                System.out.println(k);
-            }
+	            while ((sCurrentLine = br.readLine()) != null)
+	            {
+	               sCurrentLine=sCurrentLine.trim();
+	               int k= getPredname(sCurrentLine);
+	               Query temp = new Query();
+	               temp.id=k;
+	               temp.query=sCurrentLine;
+	               ids.add(temp);
+	            }
             }
 
-        } catch (IOException e)
+        } 
+        catch (IOException e)
         {
-        } finally
+        	//TODO:throw exception here..
+        } 
+        finally
         {
             try
             {
@@ -74,24 +70,21 @@ public class EstimateQuery
                 {
                     br.close();
                 }
-            } catch (IOException ex)
+            } 
+            catch (IOException ex)
             {
+            	//TODO:throw exception here..
             }
         }
         //updateEvidence(a);
-//            System.out.println(p.getRelName());
-//            System.out.println(p.getRelName());
         return ids;
     }
 
     private int getPredname(String line)
     {
-        //System.out.println("\nLine: "+line);
         String k[] = line.split("\\(");
-
         String k1[] = k[1].split("\\)");
 
-//        System.out.println(k1[0]);
         ArrayList<Integer> ids = new ArrayList<Integer>();
 
         String strings[];
@@ -102,7 +95,8 @@ public class EstimateQuery
         if (k1[0].contains(","))
         {
             strings = k1[0].split(",");
-        } else
+        } 
+        else
         {
             strings = new String[1];
             strings[0] = k1[0];
@@ -110,10 +104,8 @@ public class EstimateQuery
         ids = getIds(strings);
         
         
-          int id=  getQueryIds(k[0], "t", ids);
-        return id;
-        //return k[0];
-        
+        int id=  getQueryIds(k[0], "t", ids);
+        return id;        
     }
 
     private ArrayList<Integer> getIds(String strings[])
@@ -122,7 +114,6 @@ public class EstimateQuery
 
         for (int i = 0; i < strings.length; i++)
         {
-//            System.out.println(strings[i]);
             try
             {
                 strings[i] = strings[i].trim();
@@ -152,8 +143,7 @@ public class EstimateQuery
             "id", "truth", "prior", "club", "atomid", "itruth", "prob", "useful"
         };
         Predicate p = mln.getPredByName(a);
-
-        //System.out.println(p.getName());
+        
         ArrayList<String> cols = new ArrayList<String>();
         try
         {

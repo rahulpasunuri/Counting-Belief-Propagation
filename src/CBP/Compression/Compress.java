@@ -190,11 +190,11 @@ public class Compress
 
     private void assignNewClauseColors()
     {
-        ArrayList<Integer> ids = new ArrayList();
+        ArrayList<Integer> ids = new ArrayList<Integer>();
 
         int id = 0;
         String msg = " ";
-        ArrayList<String> colors = new ArrayList();
+        ArrayList<String> colors = new ArrayList<String>();
         int cID = 65;
 
         for (Clause c : clauses)
@@ -275,9 +275,9 @@ public class Compress
 
 //        ASCII Code for A = 65, Z=90
         //Collections.sort(predicates);
-        ArrayList<Integer> ids = new ArrayList();;
+        ArrayList<Integer> ids = new ArrayList<Integer>();;
         int id = 0;
-        ArrayList<String> colors = new ArrayList();
+        ArrayList<String> colors = new ArrayList<String>();
         char cID = 64;
         for (Predicate p : predicates)
         {
@@ -394,8 +394,8 @@ public class Compress
     {
         System.out.println("In Compression");
 
-        ArrayList<String> colors = new ArrayList();
-        ArrayList<String> cColors = new ArrayList();
+        ArrayList<String> colors = new ArrayList<String>();
+        ArrayList<String> cColors = new ArrayList<String>();
 
         for (Predicate p : predicates)
         {

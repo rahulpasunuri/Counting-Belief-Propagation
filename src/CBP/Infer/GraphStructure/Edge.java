@@ -11,14 +11,20 @@ package CBP.Infer.GraphStructure;
  * @author shrutika
  */
 public class Edge
-{
+{	//v1 is a clause..
+	//v2 is a predicate..
+	
     private Vertex v1; //this is the clause
     private Vertex v2;
     private boolean isEdgeVisited=false;
+    
+    
+    //whats the exact distinction between the below three??
     private double variableToClause[]={1.0,1.0};
-//    private double clauseToVariable[]={1.0,1.0};
     private Message clauseMsg;
     private Message predMsg;
+    
+    
     private boolean sign=true;
     public Edge(Vertex a, Vertex b)
     {
@@ -57,9 +63,7 @@ public class Edge
     }
     public void setEvidenceMessage(int evidence)
     {
-        variableToClause[(evidence+1)%2] =0.0;
-//        variableToClause[evidence] =1.0;
-        
+        variableToClause[(evidence+1)%2] =0.0;        
     }
 
     public void setClauseMsg(Message msg)
