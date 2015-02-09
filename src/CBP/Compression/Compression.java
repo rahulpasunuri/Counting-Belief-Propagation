@@ -95,32 +95,6 @@ public class Compression
             System.out.println(e);
         }
     }
-    
- 
-    public void Compress()
-    {
-        //mln0_clauses
-        
-            
-            
-        while(true)
-        {
-            System.out.println(iterationCount);
-            
-            
-            
-            if(convergence())
-            {
-                System.out.println(iterationCount);
-                break;
-            }
-        }
-    }
-    
-    private boolean convergence()
-    {                
-        return false;
-    }
 */
    
 

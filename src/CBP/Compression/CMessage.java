@@ -10,8 +10,19 @@ package CBP.Compression;
  *
  * @author shrutika
  */
-class CMessage {
-    String s;    
+class CMessage 
+{
+    private String s;    
+    
+    public void clear()
+    {
+    	s="";    	
+    }
+    
+    public String getMessage()
+    {
+    	return s;    	
+    }
     
     void addliteralMessage(String temp) 
     {

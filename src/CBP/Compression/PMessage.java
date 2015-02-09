@@ -12,10 +12,22 @@ import java.util.ArrayList;
  *
  * @author shrutika
  */
-class PMessage {
-    ArrayList<String> msg = new ArrayList<String>();
+class PMessage 
+{
+    private ArrayList<String> msg = new ArrayList<String>();
 
-    void addClauseMsgToPredicate(String s) {
+    public ArrayList<String> getMessage()
+    {
+    	return msg;
+    }
+    
+    public void clear()
+    {    	
+    	msg.clear();
+    }
+    
+    void addClauseMsgToPredicate(String s) 
+    {
         msg.add(s);
     }
     

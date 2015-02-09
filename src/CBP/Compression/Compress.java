@@ -158,16 +158,17 @@ public class Compress
 
     private void updateMessages()
     {
-
+    	//update clause messages here..
         for (Clause c : clauses)
         {
-            c.msg.s = "";
+            c.msg.clear();
             ArrayList<Integer> lits = c.literals;
             for (int i : lits)
             {
                 String temp = getPred((Math.abs(i))).color;
                 if (i < 0 && iteration == 1)
                 {
+                	//negate the messages, as the literal is negative.
                     if (temp == "T")
                     {
                         temp = "F";
@@ -176,20 +177,22 @@ public class Compress
                     {
                         temp = "T";
                     }
-
-                } else if (i < 0)
+                } 
+                else if (i < 0)
                 {
                     temp = "N" + temp;
                 }
                 c.msg.addliteralMessage(temp);
             }
 
+            //append clause's color at the end.
             c.msg.addliteralMessage(c.color);
             for (int i : lits)
             {
-                getPred((Math.abs(i))).msg.msg.add(c.msg.s);
+            	//add the clause message to the list of predicate messages..
+            	//should we not clear all the predicate messages first ???
+                getPred((Math.abs(i))).msg.addClauseMsgToPredicate(c.msg.getMessage());
             }
-            //addClauseMsgToPredicate();
         }        
     }
 
@@ -198,13 +201,12 @@ public class Compress
         ArrayList<Integer> ids = new ArrayList<Integer>();
 
         int id = 0;
-        String msg = " ";
         ArrayList<String> colors = new ArrayList<String>();
         int cID = 65;
 
         for (Clause c : clauses)
         {
-            int hash = c.msg.s.hashCode();
+            int hash = c.msg.getMessage().hashCode();
             if (!ids.contains(hash))
             {
 //                This implies that the message is not seen before
@@ -270,8 +272,7 @@ public class Compress
                 c.oldColor = c.color;
             }
 
-            c.msg.s = "";
-
+            c.msg.clear();
         }
     }
 
@@ -279,7 +280,6 @@ public class Compress
     {
 
 //        ASCII Code for A = 65, Z=90
-        //Collections.sort(predicates);
         ArrayList<Integer> ids = new ArrayList<Integer>();;
         int id = 0;
         ArrayList<String> colors = new ArrayList<String>();
@@ -287,7 +287,7 @@ public class Compress
         for (Predicate p : predicates)
         {
             cID++;
-            ArrayList<String> msg = p.msg.msg;
+            ArrayList<String> msg = p.msg.getMessage();
             Collections.sort(msg);
             int hash = msg.hashCode();
 
@@ -315,11 +315,9 @@ public class Compress
                             nColor = "C" + nColor;
                             nColor = nColor + t;
                         }
-
-//                        nColor = nColor.replaceAll("[0-9]", "");
-                    } else
+                    } 
+                    else
                     {
-
                         break;
                     }
                 }
@@ -334,7 +332,8 @@ public class Compress
                     colorChanged = true;
                 }
                 p.oldColor = p.color;
-            } else
+            } 
+            else
             {
                 int x = ids.indexOf(hash);
                 String nColor = colors.get(x);
@@ -346,7 +345,7 @@ public class Compress
                 p.oldColor = p.color;
             }
 
-            p.msg.msg.clear();
+            p.msg.clear();
 
         }
 
@@ -366,7 +365,8 @@ public class Compress
                 i++;
             }
             System.out.println("# of iterations: " + i);
-        } else
+        } 
+        else
         {
             while (colorChanged)
             {
