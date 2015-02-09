@@ -5,13 +5,12 @@
  */
 package CBP.Compression;
 
-import CBP.Infer.BeliefPropagation;
+//import CBP.Infer.BeliefPropagation;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import tuffy.db.RDB;
-import tuffy.mln.MarkovLogicNetwork;
 
 /**
  *
@@ -150,7 +149,8 @@ public class Compress
                 predicates.add(ptemp);
             }
 
-        } catch (Exception e)
+        } 
+        catch (Exception e)
         {
             System.out.println(e);
         }
@@ -250,7 +250,8 @@ public class Compress
                             nColor = nColor + t;
                         }
 
-                    } else
+                    } 
+                    else
                     {
 
                         break;
@@ -454,8 +455,8 @@ public class Compress
                                 break;
                             } 
                             else
-                            {
-                                clause.noOfIdenticalMsgs[Math.abs(k)]++;
+                            {                            	
+                                clause.incrementIdenticalMessages(Math.abs(k));
                             }
                         }
                     }

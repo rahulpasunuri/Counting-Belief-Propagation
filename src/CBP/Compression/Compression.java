@@ -8,14 +8,12 @@ package CBP.Compression;
 import CBP.AddEvidence.ParseEvidence;
 import CBP.Infer.BeliefPropagation;
 import CBP.Infer.EstimateQuery;
+
 import java.io.IOException;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
 import tuffy.db.RDB;
 import tuffy.ground.Grounding;
 import tuffy.mln.MarkovLogicNetwork;
-import tuffy.mln.Predicate;
 import tuffy.util.Config;
 
 /**
@@ -30,14 +28,16 @@ public class Compression
     Grounding grounding;
     private final Compress c;
     private String queryAtoms;       
-
-    public Compression(Grounding g, String s, long stat, int noOfIterations)
+    String queryFileName;
+    public Compression(Grounding g, String s, long stat, int noOfIterations, String queryFileName)
     {
         grounding = g;
         mln = g.getMLN();
         db = mln.getRDB();
         db.schema = Config.db_schema;
+        this.queryFileName=queryFileName;
         new ParseEvidence(db).parse(s,mln);
+        
         c= new Compress(db, noOfIterations);
     }
     
@@ -47,7 +47,9 @@ public class Compression
         ArrayList<Clause> cl = c.getCompressedClauses();
         ArrayList<CBP.Compression.Predicate> pd = c.getCompressedPreds();
         BeliefPropagation bp;
-    	bp = new BeliefPropagation(pd, cl);
+        EstimateQuery e = new EstimateQuery(db);
+        
+    	bp = new BeliefPropagation(pd, cl, e.parse(queryFileName, mln));
 //         ArrayList<Integer> iQuerys=new EstimateQuery(db).parse(queryAtoms,mln);
          bp.computeProbabilities();
         

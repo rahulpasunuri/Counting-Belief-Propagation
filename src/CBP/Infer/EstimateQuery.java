@@ -102,9 +102,7 @@ public class EstimateQuery
             strings[0] = k1[0];
         }
         ids = getIds(strings);
-        
-        
-        int id=  getQueryIds(k[0], "t", ids);
+        int id=  getQuerysAtomId(k[0], ids);
         return id;        
     }
 
@@ -125,7 +123,8 @@ public class EstimateQuery
                     int id = Integer.parseInt(rs.getString("id"));
                     ids.add(id);
                 }
-            } catch (Exception e)
+            } 
+            catch (Exception e)
             {
                 System.out.println(e);
             }
@@ -134,15 +133,10 @@ public class EstimateQuery
         return ids;
     }
 
-    private int getQueryIds(String a, String b, ArrayList<Integer> id)
+    private int getQuerysAtomId(String predName, ArrayList<Integer> id)
     {
         int ids =0;
-
-        String knownColumns[] =
-        {
-            "id", "truth", "prior", "club", "atomid", "itruth", "prob", "useful"
-        };
-        Predicate p = mln.getPredByName(a);
+        Predicate p = mln.getPredByName(predName);
         
         ArrayList<String> cols = new ArrayList<String>();
         try
@@ -156,24 +150,28 @@ public class EstimateQuery
             {
                 cols.add(rsmd.getColumnName(i));
             }
-
-        } catch (Exception e)
+        } 
+        catch (Exception e)
         {
             System.out.println(e);
         }
 
-        if (p.getName().equalsIgnoreCase(a))
+        if (p.getName().equalsIgnoreCase(predName))
         {
             String sql1 = "Select atomid from "+ p.getRelName() + " where "; 
             for (int i = 0; i<cols.size(); i++)
             {
-                sql1 = sql1 + cols.get(i) + " = " + id.get(i);
+                sql1 = sql1 + cols.get(i) ;
+                sql1 = sql1 +" = " + id.get(i);
                 if (i == cols.size() - 1)
                 {
                     continue;
                 }
-                sql1 = sql1 + " AND ";
-            }            
+                if(i!=cols.size()-1)
+                {
+                	sql1 = sql1 + " AND ";
+                }    
+            }
 
            
             try
@@ -191,6 +189,7 @@ public class EstimateQuery
                 System.out.println(e);
             }
         }
+        //System.out.println("Atom id of query is "+ids);
         return ids;
     }
 

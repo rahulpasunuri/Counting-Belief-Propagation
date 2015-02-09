@@ -148,9 +148,8 @@ public class Graph
     }
 
     
-    public Vertex getClusteredVertexByID(int id)
+    public Vertex getClusteredPredicateVertexByID(int id)
     {
-        System.out.println("out id: "+id);
         for (Vertex v : predVertices)
         {            
             Predicate p = v.getPredicate();
@@ -163,4 +162,18 @@ public class Graph
         }
         return null;
     }    
+    
+    public Vertex getPredicateVertexById(int id)
+    {
+        for (Vertex v : predVertices)
+        {            
+            Predicate p = v.getPredicate();
+            if(p.getID()==id)
+            {
+            	return v;
+            }
+        }
+        return null;    	
+    }
+    
 }

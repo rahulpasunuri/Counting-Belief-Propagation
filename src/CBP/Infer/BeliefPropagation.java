@@ -18,6 +18,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import tuffy.db.RDB;
+import tuffy.mln.MarkovLogicNetwork;
+
 /**
  *
  * @author shrutika
@@ -32,14 +35,15 @@ public class BeliefPropagation
     private final FactorGraph fg;
     private final Graph g;
     ArrayList<Vertex> vertices;
-
-    public BeliefPropagation(ArrayList<Predicate> p, ArrayList<Clause> c)
+    private ArrayList<Query> queries;
+    public BeliefPropagation(ArrayList<Predicate> p, ArrayList<Clause> c, ArrayList<Query> queries)
     {
         preds = p;
         clauses = c;
         fg = new FactorGraph(preds, clauses);
         g = fg.getGraph();
-        vertices = g.getVertices();
+        vertices = g.getVertices();  
+        this.queries=queries;
         run();
     }
 
@@ -247,12 +251,21 @@ public class BeliefPropagation
         }
     }
     */
-    
+    public String getDescriptionById(int id)
+    {
+    	//String predName = mln.get
+
+    	//e.
+    	
+    	return Integer.toString(id);    	
+    }
     
     public void computeProbabilities() throws IOException
     {
+        System.out.println("Computing Probabilities");
         ArrayList<Query> iQuerys = null;
-        File file = new File("results.txt");
+        String fileName = "results.txt";
+        File file = new File(fileName);
 
         // if file doesn't exists, then create it
         if (!file.exists())
@@ -261,23 +274,24 @@ public class BeliefPropagation
         }
         FileWriter fw = new FileWriter(file.getAbsoluteFile());
         BufferedWriter bw = new BufferedWriter(fw);
+                         
 
         //TODO
         //set the value of iQuerys
-        if(iQuerys!=null)
-        for (Query q : iQuerys)
-        {
-            System.out.println(q.id);
-            Vertex v = g.getClusteredVertexByID(q.id);
+        for (Query q : queries)
+        {            
+            Vertex v = g.getClusteredPredicateVertexByID(q.id);
             Predicate p = v.getPredicate();
             if (p.hasEvidence())
             {
+            	//predicate already has evidence..
                 double pro=1.0;
                 if(!p.getEvidence())
                     pro=0.0;
-                String temp = q.query+" "+pro;
+                String temp="";
+            	temp += q.query+": "+pro+"\n";	                	
+                                
                 bw.write(temp);
-                bw.newLine();
             } 
             else
             {
@@ -296,13 +310,13 @@ public class BeliefPropagation
                 double num = Math.exp(True);
                 double denom = Math.exp((True)) + Math.exp((False));
 
-                String temp = q.query+" "+num / denom;
+                String temp = q.query+": "+(num / denom)+"\n";;                                
                 bw.write(temp);
-                bw.newLine();
             }
 
         }
-        
-        bw.close();
+        bw.flush();
+        bw.close();    
+        System.out.println("Results have been saved in: "+fileName);
     }
 }

@@ -7,6 +7,7 @@ package CBP.Compression;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Hashtable;
 
 /**
  *
@@ -22,7 +23,7 @@ public class Clause
     double weight;
     String color="";
     String oldColor ="";
-    int []noOfIdenticalMsgs;
+    Hashtable<Integer, Integer> noOfIdenticalMsgs; //map from predicate id to count of identical messages..
     
     /*
      * x- clause id, c-cluster ids, l - literal ids, wt- weight, 
@@ -36,9 +37,8 @@ public class Clause
         weight = wt;
         msg = m;
         color=oldColor=clr;
-        noOfIdenticalMsgs = new int[literals.size()];
-        
-        Arrays.fill(noOfIdenticalMsgs, 1);
+        noOfIdenticalMsgs = new Hashtable<Integer, Integer>();        
+        //Arrays.fill(noOfIdenticalMsgs, 1);
     }
           
     public ArrayList<Integer> getLiterals()
@@ -58,6 +58,7 @@ public class Clause
 
     public int getIdenticalMsgs(int j)
     {
+    	/*
         int t=0;
         if(literals.contains(j))
             t= literals.indexOf(j);
@@ -66,7 +67,31 @@ public class Clause
             int k=j*-1; //if the literal is negative...
             t= literals.indexOf(k);
         }
-        return noOfIdenticalMsgs[t];
+        */
+    	j=Math.abs(j);
+    	if(noOfIdenticalMsgs.keySet().contains(j))
+    	{
+    		return (Integer)noOfIdenticalMsgs.get(j);    		
+    	}
+    	else
+    	{
+    		noOfIdenticalMsgs.put(new Integer(j), new Integer(1));
+    		return 1;
+    	}
+    }
+    
+    public void incrementIdenticalMessages(int literalId)
+    {
+    	literalId = Math.abs(literalId);
+    	if(noOfIdenticalMsgs.keySet().contains(literalId))
+    	{
+    		Integer i = (Integer)noOfIdenticalMsgs.get(literalId);
+    		i++;
+    	}
+    	else
+    	{
+    		noOfIdenticalMsgs.put(new Integer(literalId), new Integer(1));    		
+    	}
     }
     
 }
