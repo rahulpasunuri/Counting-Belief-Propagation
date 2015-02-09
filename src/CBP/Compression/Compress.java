@@ -158,6 +158,12 @@ public class Compress
 
     private void updateMessages()
     {
+        //clear the list of messages..each predicate has..
+        for(Predicate p : predicates)
+        {            	
+        	p.msg.clear();
+        }
+    	    	
     	//update clause messages here..
         for (Clause c : clauses)
         {
@@ -184,18 +190,19 @@ public class Compress
                 }
                 c.msg.addliteralMessage(temp);
             }
-
+            
             //append clause's color at the end.
             c.msg.addliteralMessage(c.color);
+                                    
             for (int i : lits)
             {
             	//add the clause message to the list of predicate messages..
-            	//should we not clear all the predicate messages first ???
                 getPred((Math.abs(i))).msg.addClauseMsgToPredicate(c.msg.getMessage());
             }
         }        
     }
 
+	//updates colors of all the clauses..
     private void assignNewClauseColors()
     {
         ArrayList<Integer> ids = new ArrayList<Integer>();
@@ -212,7 +219,9 @@ public class Compress
 //                This implies that the message is not seen before
 //                so u have to assign a new color here
 //                ids.add(hash);
-                if (cID == 91)
+            	            	
+            	//65 = A, 90=Z
+                if (cID == 91) //start again from 65..
                 {
                     cID = 65;
                 }
@@ -223,17 +232,17 @@ public class Compress
                 int t = 0;
                 while (true)
                 {
-
                     t++;
                     if (colors.contains(nColor))
                     {
-                        if (!nColor.contains("[0-9") && cID <= 91)
+                        if (!nColor.contains("[0-9") && cID <= 91) //what is this contains operation doing ??
                         {
                             nColor = Character.toString((char) cID);
                             nColor = "C" + nColor;
                             cID++;
 
-                        } else
+                        } 
+                        else
                         {
                             cID = 65;
                             nColor = Character.toString((char) cID);
@@ -259,10 +268,12 @@ public class Compress
                     colorChanged = true;
                 }
                 c.oldColor = c.color;
-
-            } else
+            } 
+            else
             {
-                int x = ids.indexOf(hash);
+            	//the clause's color already exists..
+            	//get the corresponding color
+            	int x = ids.indexOf(hash);
                 String nColor = colors.get(x);
                 c.color = nColor;
                 if (!c.oldColor.equals(c.color))
@@ -278,7 +289,7 @@ public class Compress
 
     private void assignNewPredColors()
     {
-
+    	//assigns new colors to the predicate vertices..
 //        ASCII Code for A = 65, Z=90
         ArrayList<Integer> ids = new ArrayList<Integer>();;
         int id = 0;
@@ -354,32 +365,17 @@ public class Compress
     private void colorPassing()
     {
         int i = 1;
-        if (k >= 10)
+        while (colorChanged)
         {
-            while (colorChanged)
-            {
-                colorChanged = false;
-                updateMessages();
-                assignNewPredColors();
-                assignNewClauseColors();
-                i++;
-            }
-            System.out.println("# of iterations: " + i);
-        } 
-        else
-        {
-            while (colorChanged)
-            {
-                colorChanged = false;
-                updateMessages();
-                assignNewPredColors();
-                assignNewClauseColors();
-                if(i==k)
-                	break;
-                i++;
-            }
-            System.out.println("# of iterations: " + i);
+            colorChanged = false;
+            updateMessages();
+            assignNewPredColors();
+            assignNewClauseColors();
+            if(i==k)
+            	break;
+            i++;
         }
+        System.out.println("# of iterations: " + i);    
     }
 
     private Predicate getPred(Integer pid)
@@ -439,16 +435,14 @@ public class Compress
                 }
 
                 ArrayList<Integer> newLits = new ArrayList<Integer>();
-                ArrayList<Predicate> lits = new ArrayList<Predicate>();
+                ArrayList<Predicate> liPreds = new ArrayList<Predicate>();
                 for (int k : clause.literals)
                 {
                     for (Predicate p : comPredicates)
                     {
                         if (p.clusters.contains(Math.abs(k)))
                         {
-                        	//we are never adding to this variable..
-                        	//so this variable is always empty..and the below condition is always false..??
-                            if (!lits.contains(p))
+                            if (!liPreds.contains(p))
                             {
                                 int t = p.id;
                                 if (k < 0)
@@ -456,11 +450,12 @@ public class Compress
                                     t = t * -1;
                                 }
                                 newLits.add(t);
+                                liPreds.add(p);
                                 break;
                             } 
                             else
                             {
-                                clause.noOfIdenticalMsgs[k]++;
+                                clause.noOfIdenticalMsgs[Math.abs(k)]++;
                             }
                         }
                     }

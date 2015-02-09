@@ -231,7 +231,7 @@ public class BeliefPropagation
 
     }
 */
-    
+    /*
     public void printPredIds()
     {
         for (Vertex v : vertices)
@@ -246,6 +246,8 @@ public class BeliefPropagation
            }
         }
     }
+    */
+    
     
     public void computeProbabilities() throws IOException
     {

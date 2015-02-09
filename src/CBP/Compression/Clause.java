@@ -40,9 +40,7 @@ public class Clause
         
         Arrays.fill(noOfIdenticalMsgs, 1);
     }
-    
-   
-    
+          
     public ArrayList<Integer> getLiterals()
     {
         return literals;
@@ -70,4 +68,5 @@ public class Clause
         }
         return noOfIdenticalMsgs[t];
     }
+    
 }
