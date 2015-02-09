@@ -23,6 +23,11 @@ public class Predicate
     boolean evidence;
     boolean query=false;
 
+    
+    /*
+     * This constructor is used for predicates evidence..
+     * x -id, c-cluster ids, col=color, m- message, e-evidence, q- whether it is a query or not..
+     */
     Predicate (int x, ArrayList<Integer> c, String col, PMessage m, boolean e, boolean q)
     {
         id = x;
@@ -32,11 +37,13 @@ public class Predicate
         msg = m;
         hasEvidence =true;
         evidence =e;
-        query=q;
-        
-        
+        query=q;               
     }
     
+    /*
+     * This constructor is used for predicates without evidence..
+     * x -id, c-cluster ids, col=color, m- message, q- whether it is a query or not..
+     */
     Predicate (int x, ArrayList<Integer> c, String wt, PMessage m, boolean q)
     {
         id = x;
@@ -45,8 +52,7 @@ public class Predicate
         
         msg = m;
         hasEvidence =false;
-        query=q;
-        
+        query=q;        
     }
     
     public boolean hasEvidence()

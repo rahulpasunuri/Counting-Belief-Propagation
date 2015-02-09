@@ -28,12 +28,8 @@ public class Compression
     MarkovLogicNetwork mln;
     RDB db;
     Grounding grounding;
-    private int iterationCount=0;
-    //private DatabaseConnector dc;s
     private final Compress c;
-    private String queryAtoms;
-    
-    
+    private String queryAtoms;       
 
     public Compression(Grounding g, String s, long stat, int noOfIterations)
     {
@@ -42,14 +38,12 @@ public class Compression
         db = mln.getRDB();
         db.schema = Config.db_schema;
         new ParseEvidence(db).parse(s,mln);
-        //dc = new DatabaseConnector(db,mln);
-        
-        c= new Compress(db,mln,noOfIterations);
-        //Compress();
+        c= new Compress(db, noOfIterations);
     }
     
     public void runBP() throws IOException
     {
+    	System.out.println("Starting BP");
         ArrayList<Clause> cl = c.getCompressedClauses();
         ArrayList<CBP.Compression.Predicate> pd = c.getCompressedPreds();
         BeliefPropagation bp;

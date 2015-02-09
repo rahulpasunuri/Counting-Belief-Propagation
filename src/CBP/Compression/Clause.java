@@ -65,7 +65,7 @@ public class Clause
             t= literals.indexOf(j);
         else
         {
-            int k=j*-1; //???
+            int k=j*-1; //if the literal is negative...
             t= literals.indexOf(k);
         }
         return noOfIdenticalMsgs[t];
