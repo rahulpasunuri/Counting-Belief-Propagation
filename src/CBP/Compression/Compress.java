@@ -6,13 +6,14 @@
 package CBP.Compression;
 
 //import CBP.Infer.BeliefPropagation;
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import tuffy.db.RDB;
 import tuffy.mln.MarkovLogicNetwork;
-
 /**
  *
  * @author shrutika
@@ -29,16 +30,20 @@ public class Compress
     
     //this is the variable which holds the list of all compressed predicates..
     ArrayList<Predicate> comPredicates = new ArrayList<Predicate>();
-    
+    private MarkovLogicNetwork mln;
     //this is the variable which holds the list of all compressed clauses..
     ArrayList<Clause> comClauses = new ArrayList<Clause>();
     int k;
-
-    public Compress(RDB db1, MarkovLogicNetwork mln,int noOfIterations)
+    String progFileName;
+    public Compress(RDB db1, MarkovLogicNetwork mln,int noOfIterations, String progFileName)
     {
         db = db1;
         k = noOfIterations;
-        init();
+        this.mln = mln;
+        this.progFileName = progFileName;
+        
+        //init all clauses and predicates..
+        init();               
     }
 
     private void init()
@@ -109,9 +114,74 @@ public class Compress
     private void initilalizePredicates()
     {
         predicates = new ArrayList<Predicate>();
-
         
-        
+        //this is the list of all unique predicates
+        ArrayList<String> liPredName = new ArrayList<String>();
+        BufferedReader br = null;
+        try
+        {
+            String line;
+            if(progFileName!=null)
+            {
+                br = new BufferedReader(new FileReader(progFileName));
+	            while ((line = br.readLine()) != null)
+	            {
+	            	line = line.trim();
+	            	if(line!="" && !line.substring(0,2).equals("\\") && !line.substring(0,2).equals("//") && !line.contains(" v ") && !line.contains("=>"))
+	            	{
+	            		String temp = line.split("\\(")[0].trim();
+	            		if(temp!="" && !liPredName.contains(temp))
+	            		{
+	            			if(temp.charAt(0)=='*') //for the closed world predicates..
+	            			{
+	            				temp = temp.substring(1);
+	            			}
+	            			liPredName.add(temp);
+	            		}
+	            	}
+	            }
+            }
+        }
+        catch(Exception e)
+        {
+        	//throw exception here TODO
+        	
+        }
+        for(String predName : liPredName)
+        {
+        	String relName = mln.getPredByName(predName).getRelName();
+        	ResultSet rs = db.query("Select atomid, truth from "+relName);
+            try 
+            {
+				while (rs.next())
+				{
+					Predicate p;
+					int aId = rs.getInt(1);
+					String truth = rs.getString(2);					
+					if(truth ==null)
+					{
+						//not an evidence..
+	                    p = new Predicate(aId, "R", false);
+					}
+					else if(truth.equalsIgnoreCase("t"))
+					{
+						//true evidence..
+	                    p = new Predicate(aId, "T", false, true); //true evidence value//
+					}
+					else
+					{
+						//false evidence..
+	                    p = new Predicate(aId, "F", false, false); //false evidence value//						
+					}
+					predicates.add(p);
+				}
+			} 
+            catch (SQLException e) 
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}        	        
+        }
         
         //the below code doesnt take, evidence into consideration...
         /*

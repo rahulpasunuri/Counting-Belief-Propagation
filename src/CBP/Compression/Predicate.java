@@ -28,13 +28,13 @@ public class Predicate
      * This constructor is used for predicates evidence..
      * x -id, c-cluster ids, col=color, m- message, e-evidence, q- whether it is a query or not..
      */
-    Predicate (int x, ArrayList<Integer> c, String col, PMessage m, boolean e, boolean q)
+    Predicate (int x, String col, boolean q, boolean e)
     {
         id = x;
-        clusters = c;
         color =oldColor= col;
-        
-        msg = m;
+        clusters = new ArrayList<Integer>();
+        clusters.add(x);
+        msg = new PMessage();
         hasEvidence =true;
         evidence =e;
         query=q;               
@@ -44,13 +44,14 @@ public class Predicate
      * This constructor is used for predicates without evidence..
      * x -id, c-cluster ids, col=color, m- message, q- whether it is a query or not..
      */
-    Predicate (int x, ArrayList<Integer> c, String wt, PMessage m, boolean q)
+    Predicate (int x, String wt,boolean q)
     {
         id = x;
-        clusters = c;
+        clusters = new ArrayList<Integer>();
+        clusters.add(x);
         color =oldColor= wt;
         
-        msg = m;
+        msg = new PMessage();
         hasEvidence =false;
         query=q;        
     }

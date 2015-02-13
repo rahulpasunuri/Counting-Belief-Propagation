@@ -42,7 +42,7 @@ public class Grounding extends Ground
         ground();
         UIMan.println("\n\n>>> Grounding completed.....");
         
-        Compression cp = new Compression(grounding, opt.addEvidence,start, opt.noOfIterations, opt.fquery);
+        Compression cp = new Compression(grounding, opt.addEvidence,start, opt.noOfIterations, opt.fquery, opt.fprog);
         cp.setQueryAtoms(opt.fquery);
         cp.runBP();               
         cleanUp();        

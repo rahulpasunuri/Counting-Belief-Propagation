@@ -30,7 +30,7 @@ public class Compression
     private final Compress c;
     private String queryAtoms;       
     String queryFileName;
-    public Compression(Grounding g, String s, long stat, int noOfIterations, String queryFileName)
+    public Compression(Grounding g, String s, long stat, int noOfIterations, String queryFileName, String progFileName)
     {
         grounding = g;
         mln = g.getMLN();
@@ -38,8 +38,7 @@ public class Compression
         db.schema = Config.db_schema;
         this.queryFileName=queryFileName;
         new ParseEvidence(db).parse(s,mln);
-        
-        c= new Compress(db, noOfIterations);
+        c= new Compress(db, mln,noOfIterations, progFileName);
     }
     
     public void runBP() throws IOException, SQLException
