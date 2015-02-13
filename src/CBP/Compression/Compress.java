@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import tuffy.db.RDB;
+import tuffy.mln.MarkovLogicNetwork;
 
 /**
  *
@@ -33,7 +34,7 @@ public class Compress
     ArrayList<Clause> comClauses = new ArrayList<Clause>();
     int k;
 
-    public Compress(RDB db1, int noOfIterations)
+    public Compress(RDB db1, MarkovLogicNetwork mln,int noOfIterations)
     {
         db = db1;
         k = noOfIterations;
@@ -42,12 +43,15 @@ public class Compress
 
     private void init()
     {
+    	long startTime = System.nanoTime();
         initializeClauses();
         System.out.println("Clauses initialized");
         initilalizePredicates();
         System.out.println("IPreds initialised");
         colorPassing();
         compression();
+        long endTime = System.nanoTime();
+        System.out.println("Time for init is"+(endTime-startTime)/Math.pow(10, 9));
     }
 
     //INIT clauses..fetches clauses from data base..
@@ -75,7 +79,8 @@ public class Compress
                 clauses.add(temp);
             }
 
-        } catch (SQLException e)
+        } 
+        catch (SQLException e)
         {
             System.out.println(e);
         }
@@ -105,6 +110,11 @@ public class Compress
     {
         predicates = new ArrayList<Predicate>();
 
+        
+        
+        
+        //the below code doesnt take, evidence into consideration...
+        /*
         try
         {
             ResultSet rs = db.query("Select isquery,atomid,truth from mln0_atoms order by atomid");
@@ -154,6 +164,7 @@ public class Compress
         {
             System.out.println(e);
         }
+        */
     }
 
     private void updateMessages()

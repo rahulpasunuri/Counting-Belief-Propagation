@@ -49,7 +49,6 @@ public class BeliefPropagation
 
     void factorGraphBP()
     {
-
         for (Vertex v : vertices)
         {
             ArrayList<Edge> neighbors = v.getNeighbors();
@@ -251,14 +250,6 @@ public class BeliefPropagation
         }
     }
     */
-    public String getDescriptionById(int id)
-    {
-    	//String predName = mln.get
-
-    	//e.
-    	
-    	return Integer.toString(id);    	
-    }
     
     public void computeProbabilities() throws IOException
     {

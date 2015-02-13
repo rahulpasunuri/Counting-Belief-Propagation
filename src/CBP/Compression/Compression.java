@@ -10,6 +10,7 @@ import CBP.Infer.BeliefPropagation;
 import CBP.Infer.EstimateQuery;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import tuffy.db.RDB;
 import tuffy.ground.Grounding;
@@ -41,15 +42,15 @@ public class Compression
         c= new Compress(db, noOfIterations);
     }
     
-    public void runBP() throws IOException
+    public void runBP() throws IOException, SQLException
     {
     	System.out.println("Starting BP");
         ArrayList<Clause> cl = c.getCompressedClauses();
         ArrayList<CBP.Compression.Predicate> pd = c.getCompressedPreds();
-        BeliefPropagation bp;
-        EstimateQuery e = new EstimateQuery(db);
+        BeliefPropagation bp;        
+        bp = new BeliefPropagation(pd, cl, EstimateQuery.getQueryAtomIds(queryFileName, db, mln));
         
-    	bp = new BeliefPropagation(pd, cl, e.parse(queryFileName, mln));
+    	//bp = new BeliefPropagation(pd, cl, e.parse(queryFileName, mln));
 //         ArrayList<Integer> iQuerys=new EstimateQuery(db).parse(queryAtoms,mln);
          bp.computeProbabilities();
         
