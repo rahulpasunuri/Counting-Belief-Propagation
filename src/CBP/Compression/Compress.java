@@ -25,7 +25,6 @@ public class Compress
     //private final String[] color; 
     private ArrayList<Clause> clauses;
     private ArrayList<Predicate> predicates;
-    private int iteration = 1;
     private boolean colorChanged = true;
     
     //this is the variable which holds the list of all compressed predicates..
@@ -48,15 +47,12 @@ public class Compress
 
     private void init()
     {
-    	long startTime = System.nanoTime();
         initializeClauses();
         System.out.println("Clauses initialized");
         initilalizePredicates();
         System.out.println("IPreds initialised");
         colorPassing();
-        compression();
-        long endTime = System.nanoTime();
-        System.out.println("Time for init is"+(endTime-startTime)/Math.pow(10, 9));
+        compression();        
     }
 
     //INIT clauses..fetches clauses from data base..
@@ -73,14 +69,9 @@ public class Compress
                 String lits = rs.getString("lits");
 
                 ArrayList<Integer> lit = parseLiterals(lits);
-                ArrayList<Integer> tempCluster = new ArrayList<Integer>();
-                tempCluster.add(id);
-                CMessage m = new CMessage();
                 Clause temp;
                 
-                //initial value of color is the weight.
-                String color = "" + weight;
-                temp = new Clause(id, tempCluster, lit, weight, m, color);
+                temp = new Clause(id, lit, weight);
                 clauses.add(temp);
             }
 
@@ -114,77 +105,6 @@ public class Compress
     private void initilalizePredicates()
     {
         predicates = new ArrayList<Predicate>();
-        
-        //this is the list of all unique predicates
-        ArrayList<String> liPredName = new ArrayList<String>();
-        BufferedReader br = null;
-        try
-        {
-            String line;
-            if(progFileName!=null)
-            {
-                br = new BufferedReader(new FileReader(progFileName));
-	            while ((line = br.readLine()) != null)
-	            {
-	            	line = line.trim();
-	            	if(line!="" && !line.substring(0,2).equals("\\") && !line.substring(0,2).equals("//") && !line.contains(" v ") && !line.contains("=>"))
-	            	{
-	            		String temp = line.split("\\(")[0].trim();
-	            		if(temp!="" && !liPredName.contains(temp))
-	            		{
-	            			if(temp.charAt(0)=='*') //for the closed world predicates..
-	            			{
-	            				temp = temp.substring(1);
-	            			}
-	            			liPredName.add(temp);
-	            		}
-	            	}
-	            }
-            }
-        }
-        catch(Exception e)
-        {
-        	//throw exception here TODO
-        	
-        }
-        for(String predName : liPredName)
-        {
-        	String relName = mln.getPredByName(predName).getRelName();
-        	ResultSet rs = db.query("Select atomid, truth from "+relName);
-            try 
-            {
-				while (rs.next())
-				{
-					Predicate p;
-					int aId = rs.getInt(1);
-					String truth = rs.getString(2);					
-					if(truth ==null)
-					{
-						//not an evidence..
-	                    p = new Predicate(aId, "R", false);
-					}
-					else if(truth.equalsIgnoreCase("t"))
-					{
-						//true evidence..
-	                    p = new Predicate(aId, "T", false, true); //true evidence value//
-					}
-					else
-					{
-						//false evidence..
-	                    p = new Predicate(aId, "F", false, false); //false evidence value//						
-					}
-					predicates.add(p);
-				}
-			} 
-            catch (SQLException e) 
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}        	        
-        }
-        
-        //the below code doesnt take, evidence into consideration...
-        /*
         try
         {
             ResultSet rs = db.query("Select isquery,atomid,truth from mln0_atoms order by atomid");
@@ -202,6 +122,8 @@ public class Compress
                 } 
                 else
                 {
+                	//the truth value is not null..
+                	//so this code doesn't happen.. 
                 	isEvidence=true;
                     if (truth.equalsIgnoreCase("t"))
                     {
@@ -214,17 +136,16 @@ public class Compress
                         evidenceVal = false;
                     }
                 }
-                ArrayList<Integer> temp = new ArrayList<Integer>();
-                temp.add(aid);
-                PMessage pmsg = new PMessage();
+
                 Predicate ptemp;
                 if (isEvidence)
                 {
-                    ptemp = new Predicate(aid, temp, c, pmsg, evidenceVal, iquery);
+                	//this never happens, as the evidence is not stored in the data base..
+                    ptemp = new Predicate(aid, c, iquery, evidenceVal);
                 } 
                 else
                 {
-                    ptemp = new Predicate(aid, temp, c, pmsg,iquery);
+                    ptemp = new Predicate(aid, c, iquery);
                 }
                 predicates.add(ptemp);
             }
@@ -234,7 +155,7 @@ public class Compress
         {
             System.out.println(e);
         }
-        */
+        
     }
 
     private void updateMessages()
@@ -253,19 +174,7 @@ public class Compress
             for (int i : lits)
             {
                 String temp = getPred((Math.abs(i))).color;
-                if (i < 0 && iteration == 1)
-                {
-                	//negate the messages, as the literal is negative.
-                    if (temp == "T")
-                    {
-                        temp = "F";
-                    } 
-                    else if (temp == "F")
-                    {
-                        temp = "T";
-                    }
-                } 
-                else if (i < 0)
+                if (i < 0)
                 {
                     temp = "N" + temp;
                 }
@@ -517,31 +426,31 @@ public class Compress
                 }
 
                 ArrayList<Integer> newLits = new ArrayList<Integer>();
-                ArrayList<Predicate> liPreds = new ArrayList<Predicate>();
                 for (int k : clause.literals)
                 {
                     for (Predicate p : comPredicates)
                     {
                         if (p.clusters.contains(Math.abs(k)))
                         {
-                            if (!liPreds.contains(p))
+                            int t = p.id;
+                            if (k < 0)
                             {
-                                int t = p.id;
-                                if (k < 0)
-                                {
-                                    t = t * -1;
-                                }
-                                newLits.add(t);
-                                liPreds.add(p);
-                                break;
+                                t = t * -1;
+                            }
+                        	
+                            if (!newLits.contains(t))
+                            {
+                                newLits.add(t);                                
                             } 
                             else
                             {                            	
-                                clause.incrementIdenticalMessages(Math.abs(k));
+                                clause.incrementIdenticalMessages(k);
                             }
+                            break;
                         }
                     }
                 }
+        
                 clause.literals = newLits;
                 comClauses.add(clause);
             } 
@@ -553,6 +462,35 @@ public class Compress
                 {
                     c1.clusters.add(clause.id);
                 }
+                
+                
+                //add the current clusters literal information..
+                for (int k : clause.literals)
+                {
+                    for (Predicate p : comPredicates)
+                    {
+                        if (p.clusters.contains(Math.abs(k)))
+                        {
+                            int t = p.id;
+                            if (k < 0)
+                            {
+                                t = t * -1;
+                            }
+                        	
+                            if (!c1.literals.contains(t))
+                            {
+                            	c1.literals.add(t);
+                            } 
+                            else
+                            {                            	
+                                c1.incrementIdenticalMessages(k);
+                            }
+                            break;
+                        }
+                    }
+                }
+                
+                
             }
         }
 

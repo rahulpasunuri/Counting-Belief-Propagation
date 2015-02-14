@@ -47,13 +47,11 @@ public class FactorGraph
                 if(lit<0)
                     sign=false;
                 
-                //how are we ensuring that predicate ids and literal ids are same???
                 Vertex v1 = graph.getPredVertexByID(lit);
                 if (v1 != null)
                 {
                     graph.addEdge(v, v1,sign);
                 }
-
             }
 
         }

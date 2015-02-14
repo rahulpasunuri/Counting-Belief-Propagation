@@ -30,7 +30,7 @@ public class Main
             return;
         }
         
-        Config.keep_db_data =true;//TODO: Remove this.
+        //Config.keep_db_data =true;//TODO: Remove this.
         
         //mark all atoms as active for CBP
         Config.mark_all_atoms_active=true;

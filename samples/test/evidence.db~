@@ -1,0 +1,5 @@
+Friends(A, B)
+Friends(A, C)
+//Friends(B,D)
+//Friends(C,D)
+Smokes(A)

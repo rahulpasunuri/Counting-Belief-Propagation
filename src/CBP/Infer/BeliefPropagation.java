@@ -52,9 +52,9 @@ public class BeliefPropagation
         for (Vertex v : vertices)
         {
             ArrayList<Edge> neighbors = v.getNeighbors();
-
             if (v.getNode().isClause)
             {
+            	//message from clauses to predicates..
                 //Clauses
                 Clause c = v.getClause();
                 for (Edge n : neighbors)
@@ -81,6 +81,7 @@ public class BeliefPropagation
                     {
                         if (n.getSign())
                         {
+                        	//System.out.println("what???");
                             False = 0;
                             True = c.getweight();
                         } 
@@ -105,12 +106,12 @@ public class BeliefPropagation
                                     else
                                     {
                                         productT = 0;
-
                                     }
-                                } else
+                                } 
+                                else
                                 {
-                                    productT *= e.getClausemsg().True;
-                                    productF *= e.getClausemsg().False;
+                                    productT *= e.getPredMsg().True;
+                                    productF *= e.getPredMsg().False;
                                 }
                             }
                         }
@@ -122,27 +123,30 @@ public class BeliefPropagation
                     m2.True = True;
                     m2.False = False;
 
-                    Message oMsg = n.getPredMsg();
+                    Message oMsg = n.getClausemsg();
                     if (Math.abs(m2.False - oMsg.False) > 0.1 || Math.abs(m2.True - oMsg.True) > 0.1)
                     {
                         msgChanged = true;
                     }
-                    n.setPredmsg(m2);
+                    n.setClauseMsg(m2);
                 }
 
             } 
             else
             {
+            	//message from predicates to clauses..
                 for (Edge n : neighbors)
                 {
                     Message m = new Message();
                     if (v.getPredicate().hasEvidence())
                     {
+                    	//this never happens...
                         if (v.getPredicate().getEvidence())
                         {
                             m.False = 0.0;
                             m.True = 1.0;
-                        } else
+                        } 
+                        else
                         {
                             m.True = 0.0;
                             m.False = 1.0;
@@ -159,37 +163,32 @@ public class BeliefPropagation
                         {
 
                             double t, f;
-                            t = f = 1;
-
+                            
+                            int k = n.getNeighborVertex(v).getClause().getIdenticalMsgs(v.getPredicate().getID())-1; //RAHUL
+                            t = Math.pow(n.getClausemsg().True, k);
+                        	f = Math.pow(n.getClausemsg().False, k);
                             for (Edge n1 : neighbors)
                             {
-                                int k = n1.getNeighborVertex(v).getClause().getIdenticalMsgs(v.getPredicate().getID()) * v.getPredicate().getClusterSize();
-                                if (!n.equals(n1))
+                                //int k = n1.getNeighborVertex(v).getClause().getIdenticalMsgs(v.getPredicate().getID()) * v.getPredicate().getClusterSize();                            	
+                            	if (!n.equals(n1))
                                 {
-                                    t = t * n1.getClausemsg().True;
-                                    f = f * n1.getClausemsg().False;
+                            		int k2 = n1.getNeighborVertex(v).getClause().getIdenticalMsgs(v.getPredicate().getID())-1; //RAHUL
+                                    t *= Math.pow(n1.getClausemsg().True, k2);
+                                    f *= Math.pow(n1.getClausemsg().False, k2);
                                 }
-                                else
-                                {
-                                    k--;
-                                }
-                                t = Math.pow(t, k);
-                                f = Math.pow(f, k);
-
                             }
                             m.True = t;
                             m.False = f;
-
                         }
                     }
 
-                    Message oMsg = n.getClausemsg();
+                    Message oMsg = n.getPredMsg();
                     if (Math.abs(m.False - oMsg.False) > 0.1 || Math.abs(m.True - oMsg.True) > 0.1)
                     {
                         msgChanged = true;
                     }
 
-                    n.setClauseMsg(m);
+                    n.setPredmsg(m);
                 }
 
             }
@@ -254,7 +253,6 @@ public class BeliefPropagation
     public void computeProbabilities() throws IOException
     {
         System.out.println("Computing Probabilities");
-        ArrayList<Query> iQuerys = null;
         String fileName = "results.txt";
         File file = new File(fileName);
 
@@ -287,21 +285,20 @@ public class BeliefPropagation
             else
             {
                 ArrayList<Edge> neighbors = v.getNeighbors();
-                double True = 0.0;
-                double False = 0.0;
+                double True = 1;
+                double False = 1;
 
                 for (Edge e : neighbors)
                 {
-                    int k = e.getNeighborVertex(v).getClause().getIdenticalMsgs(p.getID()) * p.getClusterSize();
+                    //int k = e.getNeighborVertex(v).getClause().getIdenticalMsgs(p.getID()) * p.getClusterSize();
+                	int k = e.getNeighborVertex(v).getClause().getIdenticalMsgs(p.getID()); //RAHUL
                     Message m = e.getPredMsg();
-                    True += Math.pow(m.True, k);
-                    False += Math.pow(m.False, k);
+                    True *= Math.pow(m.True, k);
+                    False *= Math.pow(m.False, k);
+                    System.out.println(True+"\t"+False);
                 }
 
-                double num = Math.exp(True);
-                double denom = Math.exp((True)) + Math.exp((False));
-
-                String temp = q.query+": "+(num / denom)+"\n";;                                
+                String temp = q.query+": "+(True / (True+False))+"\n";;                                
                 bw.write(temp);
             }
 

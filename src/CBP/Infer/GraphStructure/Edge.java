@@ -16,7 +16,6 @@ public class Edge
 	
     private Vertex v1; //this is the clause
     private Vertex v2;
-    private boolean isEdgeVisited=false;
     
     
     //whats the exact distinction between the below three??
@@ -32,16 +31,6 @@ public class Edge
         v2=b;
         clauseMsg = new Message();
         predMsg= new Message();
-    }
-    
-    public void setEdgeVisited()
-    {
-        isEdgeVisited=true;
-    }
-    
-    public boolean isEdgeVisited()
-    {
-        return isEdgeVisited;
     }
 
     public Vertex getNeighborVertex(Vertex v)
