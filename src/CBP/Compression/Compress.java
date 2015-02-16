@@ -6,8 +6,6 @@
 package CBP.Compression;
 
 //import CBP.Infer.BeliefPropagation;
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -34,7 +32,7 @@ public class Compress
     ArrayList<Clause> comClauses = new ArrayList<Clause>();
     int k;
     String progFileName;
-    public Compress(RDB db1, MarkovLogicNetwork mln,int noOfIterations, String progFileName)
+    public Compress(RDB db1, MarkovLogicNetwork mln,int noOfIterations, String progFileName, boolean debug)
     {
         db = db1;
         k = noOfIterations;
@@ -42,17 +40,33 @@ public class Compress
         this.progFileName = progFileName;
         
         //init all clauses and predicates..
-        init();               
+        init(debug);               
     }
 
-    private void init()
+    private void init(boolean debug)
     {
         initializeClauses();
         System.out.println("Clauses initialized");
         initilalizePredicates();
         System.out.println("IPreds initialised");
-        colorPassing();
-        compression();        
+        if(debug)
+        {
+        	//disabling these two to debug BP code..
+	        colorPassing();
+	        compression();
+        }
+        else
+        {
+        	for(Clause c : clauses)
+            {
+            	for(int l : c.getLiterals())
+            	{
+            		c.incrementIdenticalMessages(l);
+            	}
+            }
+        	comPredicates=predicates;
+        	comClauses=clauses;
+        }
     }
 
     //INIT clauses..fetches clauses from data base..
@@ -441,11 +455,9 @@ public class Compress
                             if (!newLits.contains(t))
                             {
                                 newLits.add(t);                                
-                            } 
-                            else
-                            {                            	
-                                clause.incrementIdenticalMessages(k);
-                            }
+                            }                                                                                   
+                            clause.incrementIdenticalMessages(k);
+                            
                             break;
                         }
                     }

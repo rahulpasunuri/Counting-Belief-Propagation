@@ -22,7 +22,7 @@ public class Predicate
     boolean hasEvidence=false;
     boolean evidence;
     boolean query=false;
-
+    public double probability;
     
     /*
      * This constructor is used for predicates evidence..

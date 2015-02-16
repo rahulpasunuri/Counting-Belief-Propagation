@@ -18,8 +18,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import tuffy.db.RDB;
-import tuffy.mln.MarkovLogicNetwork;
+import com.sun.xml.internal.ws.handler.ClientMessageHandlerTube;
+
 
 /**
  *
@@ -47,6 +47,24 @@ public class BeliefPropagation
         run();
     }
 
+    private ArrayList<String> createTFCombinations(int length)
+    {
+    	ArrayList<String> res = new ArrayList<String>();
+    	if(length==1)
+    	{
+    		res.add("T");
+    		res.add("F");
+    		return res;
+    	}
+    	ArrayList<String> t = createTFCombinations(length-1);
+    	for(String s : t)
+    	{
+    		res.add("T"+s);
+    		res.add("F"+s);
+    	}
+    	return res;
+    }
+    
     void factorGraphBP()
     {
         for (Vertex v : vertices)
@@ -54,81 +72,106 @@ public class BeliefPropagation
             ArrayList<Edge> neighbors = v.getNeighbors();
             if (v.getNode().isClause)
             {
+            	ArrayList<String> comb = createTFCombinations(v.getClause().getLiterals().size());
             	//message from clauses to predicates..
                 //Clauses
-                Clause c = v.getClause();
+                Clause c = v.getClause(); 
                 for (Edge n : neighbors)
-                {
-                    //predicates;
-                    double True = 1.0;
-                    double False = 1.0;
-                    double productT = 1.0;
-                    double productF = 1.0;
-                    Predicate p = n.getNeighborVertex(v).getPredicate();
+                {                    
+                    Predicate p = n.getNeighborVertex(v).getPredicate();                    
+                    Message m = new Message();                    
+                    
+                    //CASE WHERE THERE IS ONLY ONE PREDICATE NODE..
+    				if(c.getLiterals().size() == 1)
+    				{
+    					if(n.getSign())
+    					{
+    						m.True= Math.exp(c.getweight());
+    						m.False = 1;
+    					}
+    					else
+    					{
+    						m.True = 1;
+    						m.False = Math.exp(c.getweight());						
+    					}
+    				}
+    				else
+    				{
+						m.True=0;
+						m.False=0;
+    					for(String s : comb)
+    					{
+							double potentialTrue = Math.exp(c.getweight());
+							double potentialFalse = Math.exp(c.getweight());
+							//double potential = f.cl.weight;
+							//determine the truthness of the clause..
+							int k=0, strIndex = 0;
+							boolean isTrue = false;
+							for(Edge e : neighbors)
+							{
+								if(n.equals(e))
+								{
+									strIndex++;
+									continue;
+								}
 
-                    if (p.hasEvidence())
-                    {
-                        if (p.getEvidence())
-                        {
-                            False = 0.0;
-                        } 
-                        else
-                        {
-                            True = 0.0;
-                        }
-                    } 
-                    else
-                    {
-                        if (n.getSign())
-                        {
-                        	//System.out.println("what???");
-                            False = 0;
-                            True = c.getweight();
-                        } 
-                        else
-                        {
-                            True = 0;
-                            False = c.getweight();
-                        }
-
-                        for (Edge e : neighbors)
-                        {
-                            if (!n.equals(e))
-                            {
-                                Predicate p2 = e.getNeighborVertex(v).getPredicate();
-
-                                if (p2.hasEvidence())
-                                {
-                                    if (p2.getEvidence())
-                                    {
-                                        productF = 0;
-                                    } 
-                                    else
-                                    {
-                                        productT = 0;
-                                    }
-                                } 
-                                else
-                                {
-                                    productT *= e.getPredMsg().True;
-                                    productF *= e.getPredMsg().False;
-                                }
-                            }
-                        }
-                    }
-
-                    True *= productT;
-                    False *= productF;
-                    Message m2 = new Message();
-                    m2.True = True;
-                    m2.False = False;
-
-                    Message oMsg = n.getClausemsg();
-                    if (Math.abs(m2.False - oMsg.False) > 0.1 || Math.abs(m2.True - oMsg.True) > 0.1)
+								if(( !e.getSign() && s.charAt(strIndex) == 'F') || (e.getSign() && s.charAt(strIndex) == 'T'))
+								{									
+									isTrue = true;
+									break;	
+								}								
+								strIndex++;							
+							}
+					
+							if(n.getSign())
+							{								
+								if(!isTrue)
+								{
+									potentialFalse = 1;
+								}			 								 
+							}
+							else
+							{								
+								if(!isTrue)
+								{
+									potentialTrue = 1;
+								}			 		
+							}   
+							double tempTrue = potentialTrue;
+							double tempFalse = potentialFalse;
+													
+							strIndex = 0;;
+							for(Edge e  : neighbors)
+							{
+								if(!n.equals(e))
+								{
+									Message pmsg = e.getPredMsg();
+									if(s.charAt(strIndex) == 'T')
+									{
+										tempTrue *= pmsg.True;
+										tempFalse *= pmsg.True; 
+									}
+									else
+									{
+										tempTrue *= pmsg.False;
+										tempFalse *= pmsg.False;								
+									}									
+								}
+								strIndex++;
+							}
+							m.True += tempTrue;
+							m.False += tempFalse;													
+    					}    					
+    				}                   
+    				//System.out.println("Priting Clause Message "+m.True+"\t"+m.False);
+    				/*
+    				Message oMsg = n.getClausemsg();
+                    if (Math.abs(m.False - oMsg.False) > 0.1 || Math.abs(m.True - oMsg.True) > 0.1)
                     {
                         msgChanged = true;
                     }
-                    n.setClauseMsg(m2);
+                    */
+                    n.setClauseMsg(m);
                 }
 
             } 
@@ -181,13 +224,14 @@ public class BeliefPropagation
                             m.False = f;
                         }
                     }
-
-                    Message oMsg = n.getPredMsg();
+    				//System.out.println("Priting Predicate Message "+m.True+"\t"+m.False);
+                    /*
+    				Message oMsg = n.getPredMsg();
                     if (Math.abs(m.False - oMsg.False) > 0.1 || Math.abs(m.True - oMsg.True) > 0.1)
                     {
                         msgChanged = true;
                     }
-
+					*/
                     n.setPredmsg(m);
                 }
 
@@ -199,10 +243,38 @@ public class BeliefPropagation
 
     private void run()
     {
+    	int iteration=0;
         while (msgChanged)
         {
             msgChanged = false;
             factorGraphBP();
+            //check for convergence..
+            for(Vertex v : vertices)
+            {
+            	if(!v.getNode().isClause)
+            	{
+                    Predicate p = v.getPredicate();
+                    ArrayList<Edge> neighbors = v.getNeighbors();
+                    double True = 1;
+                    double False = 1;
+
+                    for (Edge e : neighbors)
+                    {
+                        //int k = e.getNeighborVertex(v).getClause().getIdenticalMsgs(p.getID()) * p.getClusterSize();
+                    	int k = e.getNeighborVertex(v).getClause().getIdenticalMsgs(p.getID()); //RAHUL
+                        Message m = e.getClausemsg();
+                        True *= Math.pow(m.True, k);
+                        False *= Math.pow(m.False, k);
+                    }
+
+                    double newProb = True / (True+False);
+                    if(!msgChanged && Math.abs(newProb-p.probability) > 0.1)
+                    {
+                    	msgChanged=true;
+                    }
+                    p.probability=newProb;
+            	}                	
+            }            	            	
         }
     }
 /*
@@ -271,37 +343,9 @@ public class BeliefPropagation
         {            
             Vertex v = g.getClusteredPredicateVertexByID(q.id);
             Predicate p = v.getPredicate();
-            if (p.hasEvidence())
-            {
-            	//predicate already has evidence..
-                double pro=1.0;
-                if(!p.getEvidence())
-                    pro=0.0;
-                String temp="";
-            	temp += q.query+": "+pro+"\n";	                	
-                                
-                bw.write(temp);
-            } 
-            else
-            {
-                ArrayList<Edge> neighbors = v.getNeighbors();
-                double True = 1;
-                double False = 1;
 
-                for (Edge e : neighbors)
-                {
-                    //int k = e.getNeighborVertex(v).getClause().getIdenticalMsgs(p.getID()) * p.getClusterSize();
-                	int k = e.getNeighborVertex(v).getClause().getIdenticalMsgs(p.getID()); //RAHUL
-                    Message m = e.getPredMsg();
-                    True *= Math.pow(m.True, k);
-                    False *= Math.pow(m.False, k);
-                    System.out.println(True+"\t"+False);
-                }
-
-                String temp = q.query+": "+(True / (True+False))+"\n";;                                
-                bw.write(temp);
-            }
-
+            String temp = q.query+": "+p.probability+"\n";;                                
+            bw.write(temp);            
         }
         bw.flush();
         bw.close();    
