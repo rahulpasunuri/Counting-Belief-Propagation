@@ -1,0 +1,120 @@
+adverse(rule)
+not_adverse(rule)
+not_related(rule)
+
+rule(rule)
+
+drug(drug)
+
+effect(effect)
+
+presentDrug(rule, object)
+presentEffect(rule, object)
+
+//classWord(class,wo)
+drugWord(drug,wo)
+effectWord(effect, wo)
+
+preHyphenWord(wo, subwo)
+postHyphenWord(wo, subwo)
+caselessWordString(wo, caselessWord!)
+wordLemma(wo, lemma)
+
+dependencyPath(ar, se, wo, wo, dp)
+dependencyType(ar, se, wo, wo, dt)
+dependencyPathFirst(ar, se, wo, wo, dp, dp)
+dependencyPathList(ar, se, wo, wo, list, list)
+dependencyPathLenRaw(ar, se, wo, wo, n, n)
+dependencyPathUp(ar, se, wo, wo, dp)
+dependencyPathDown(ar, se, wo, wo, dp)
+
+dpBetweenDrugAndEffect(rule)
+dpR(rule, dp)
+dpH(rule, wo, subwostr, wordType)
+dpWhileReceiving(rule, dp)
+dpWhileTaking(rule, dp)
+dpRCount(rule, dp1, n, n)
+dpWhileReceivingCount(rule, dp2, n, n)
+dpWhileTakingCount(rule, dp3, n, n)
+dpDirectCause(rule, dp4, dp44, n, n)
+dpDirectIncrease(rule, dp5, dp55, n, n)
+dpRisk(rule, dp6, dp66, n, n)
+dpRiskAssociated(rule, dp7, dp77, n, n)
+dpAssociated(rule, dp8, dp88, n, n)
+dpConsequence(rule, dp9, n, n)
+
+dpSideEffect(rule, dp10, dp10, n, n)
+dpSideWithEffect(rule, dp11, dp11, n, n)
+dpProduce(rule, dp12, dp12, n, n)
+
+adverseCount(rule, n, n)
+
+cosineSimilarity(rule, value)
+cosineSimilarityWeight(rule, float_ wgt)
+
+// Similarity rules
+wgt: cosineSimilarityWeight(r, wgt) => adverse(r)
+
+// drug and effect in same sentence
+1 dpBetweenDrugAndEffect(r) => adverse(r)
+
+
+// effect after drug
+//2 dpR(r,dp), [contains(dp, "PREP_AFTER") OR contains(dp, "PREP_FOLLOWING")] => adverse(r)
+dpRCount(r, dp, up, down), [contains(dp, "PREP_AFTER") OR contains(dp, "PREP_FOLLOWING")] => adverseCount(r, up, down).
+
+// effect on xxxx following drug
+//2 dpR(r,dp), [contains(dp, "PREP_ON") AND contains(dp, "PREP_FOLLOWING")] => adverse(r)
+dpRCount(r, dp, up, down), [contains(dp, "PREP_ON") AND contains(dp, "PREP_FOLLOWING")] => adverseCount(r, up, down).
+
+// drug-<induced|associated> amod effect
+3 dpH(r, wo, str, str1), [(str = "induced" OR str = "associated") AND (contains(str1, "AMOD"))] => adverse(r)
+//2 dpH(r, wo, str), [str = "associated"] => adverse(r)
+
+// effect prep_while <receiving|taking> drug
+//2 dpWhileReceiving(r,dp), [contains(dp, "PREPC_WHILE")] => adverse(r)
+//2 dpWhileTaking(r,dp), [contains(dp, "PREPC_WHILE")] => adverse(r)
+dpWhileReceivingCount(r, dp, up, down), [contains(dp, "PREPC_WHILE")] => adverseCount(r, up, down).
+dpWhileTakingCount(r, dp, up, down), [contains(dp, "PREPC_WHILE")] => adverseCount(r, up, down).
+
+// drug nsubj <cause|increase> dobj effect
+//2 effect(e), effectWord(e, ew), drug(d), drugWord(d, dw), present(r, d), present(r, e),  dependencyType(ar, se, dw, wo, NSUBJ), dependencyType(ar, se, wo, ew, AMOD), wordLemma(wo, cause) => adverse(r)
+//dpDirect(r, dp1, dp2, str, up, down), [contains(dp1, "NSUBJ") AND contains(dp2, "DOBJ") AND (str = "cause" OR str = "increase")] => adverseCount(r, up, down).
+dpDirectCause(r, dp1, dp2, up, down), [contains(dp1, "NSUBJ") AND contains(dp2, "DOBJ")] => adverseCount(r, up, down).
+dpDirectIncrease(r, dp1, dp2, up, down), [contains(dp1, "NSUBJ") AND contains(dp2, "PREP_OF")] => adverseCount(r, up, down).
+
+// risk prep_of effect partmod drug
+dpRisk(r, dp1, dp2, up, down), [contains(dp1, "PREP_OF") AND contains(dp2, "PARTMOD")] => adverseCount(r, up, down).
+
+// risk <prep_of|prep_for> effect associated prep_with drug
+dpRiskAssociated(r, dp1, dp2, up, down), [(contains(dp1, "PREP_OF") OR contains(dp1, "PREP_FOR")) AND contains(dp2, "PREP_WITH")] => adverseCount(r, up, down).
+
+// drug nsubjpass associated prep_with effect
+dpAssociated(r, dp1, dp2, up, down), [contains(dp1, "NSUBJPASS") AND contains(dp2, "PREP_WITH")] => adverseCount(r, up, down).
+
+// effect <consequence|result> prep_of drug
+//dpConsequence(r, dp, str, up, down), [contains(dp, "PREP_OF") AND (str = "consequence" OR str = "result")] => adverseCount(r, up, down).
+dpConsequence(r, dp, up, down), [contains(dp, "PREP_OF")] => adverseCount(r, up, down).
+
+//effect after drug admnistered
+//dpAdminister(r, dp, up, down), [contains(dp, "PREF_AFTER")] => adverseCount(r, up, down).
+
+//effect side-effect of drug
+//dpSideEffect(r, dp1, dp2, up, down), [contains(dp1, "PREP_OF")] => adverseCount(r, up, down).
+
+//effect side effect of drug
+dpSideWithEffect(r, dp1, dp2, up, down), [contains(dp1, "PREP_OF")] => adverseCount(r, up, down).
+
+//drug promotes effect
+//dpPromote(r, dp1, dp2, up, down) => adverseCount(r, up, down).
+
+//drug produced effect
+dpProduce(r, dp1, dp2, up, down) => adverseCount(r, up, down).
+
+// Counting dependency steps in dependency path
+3 adverseCount(r, up, down), [up+down = 1] => adverse(r)
+2.5 adverseCount(r, up, down), [up+down = 2] => adverse(r)
+2 adverseCount(r, up, down), [up+down = 3] => adverse(r)
+1.5 adverseCount(r, up, down), [up+down >= 4] => adverse(r)
+
+-0.5 !adverse(r)
