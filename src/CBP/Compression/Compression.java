@@ -38,7 +38,7 @@ public class Compression
         db.schema = Config.db_schema;
         this.queryFileName=queryFileName;
         new ParseEvidence(db).parse(s,mln);
-        c= new Compress(db, mln,noOfIterations, progFileName);
+        c= new Compress(db, mln,noOfIterations, progFileName, true); //last variable is just a debug parameter.
     }
     
     public void runBP() throws IOException, SQLException
@@ -47,12 +47,8 @@ public class Compression
         ArrayList<Clause> cl = c.getCompressedClauses();
         ArrayList<CBP.Compression.Predicate> pd = c.getCompressedPreds();
         BeliefPropagation bp;        
-        bp = new BeliefPropagation(pd, cl, EstimateQuery.getQueryAtomIds(queryFileName, db, mln));
-        
-    	//bp = new BeliefPropagation(pd, cl, e.parse(queryFileName, mln));
-//         ArrayList<Integer> iQuerys=new EstimateQuery(db).parse(queryAtoms,mln);
-         bp.computeProbabilities();
-        
+        bp = new BeliefPropagation(pd, cl, EstimateQuery.getQueryAtomIds(queryFileName, db, mln));        
+        bp.computeProbabilities();        
     }
 /*
     public void printAllTablesinSchema()

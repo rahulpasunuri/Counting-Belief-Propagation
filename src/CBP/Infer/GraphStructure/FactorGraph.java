@@ -28,6 +28,7 @@ public class FactorGraph
         ArrayList<Node> preds = new ArrayList<Node>();
         for (Predicate p : Predicates)
         {
+        	//System.out.println("Predicate id is "+p.getID());
             Node temp = new PredicateNode(p);
             preds.add(temp);
         }
@@ -42,18 +43,16 @@ public class FactorGraph
             graph.addVertex(v);
             for (int lit : literals)
             {
-                lit = Math.abs(lit);
                 boolean sign=true;
                 if(lit<0)
                     sign=false;
-                
-                Vertex v1 = graph.getPredVertexByID(lit);
+                Vertex v1 = graph.getPredVertexByID(Math.abs(lit));
                 if (v1 != null)
                 {
+
                     graph.addEdge(v, v1,sign);
                 }
             }
-
         }
     }
     

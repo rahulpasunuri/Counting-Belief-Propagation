@@ -81,7 +81,7 @@ public class Clause
     	}
     	else
     	{
-    		noOfIdenticalMsgs.put(new Integer(literalId), new Integer(2)); //note that we start from two...    		
+    		noOfIdenticalMsgs.put(new Integer(literalId), new Integer(1));    		
     	}
     }
     

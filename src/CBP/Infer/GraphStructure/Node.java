@@ -17,7 +17,6 @@ public class Node
 {
     private double message =1.0;
     public boolean isClause=false;
-    
     /**
      * 
      * @return
