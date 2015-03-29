@@ -49,7 +49,6 @@ public class FactorGraph
                 Vertex v1 = graph.getPredVertexByID(Math.abs(lit));
                 if (v1 != null)
                 {
-
                     graph.addEdge(v, v1,sign);
                 }
             }

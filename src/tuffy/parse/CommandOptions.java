@@ -80,6 +80,9 @@ public class CommandOptions {
     @Option(name="-conf", usage="Path of the configuration file. Default=/home/shrutika/Documents/CBP/tuffy.conf'")
     public String pathConf = null;
 
+    @Option(name="-runBox", usage="Runs Box propagation instead if usual BP")
+    public boolean runBox = false;
+    
     @Option(name="-help", usage="Display command options.")
     public boolean showHelp = false;
 

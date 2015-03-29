@@ -44,7 +44,14 @@ public class Grounding extends Ground
         
         Compression cp = new Compression(grounding, opt.addEvidence,start, opt.noOfIterations, opt.fquery, opt.fprog);
         cp.setQueryAtoms(opt.fquery);
-        cp.runBP();               
+        if(!options.runBox)
+        {	
+        	cp.runBP();
+        }
+        else
+        {
+        	cp.runBoxPropagation();
+        }
         cleanUp();        
     }
 

@@ -7,6 +7,7 @@ package CBP.Compression;
 
 import CBP.AddEvidence.ParseEvidence;
 import CBP.Infer.BeliefPropagation;
+import CBP.Infer.BoxPropagation; // does box propagation instead of belief propagation
 import CBP.Infer.EstimateQuery;
 
 import java.io.IOException;
@@ -49,6 +50,16 @@ public class Compression
         BeliefPropagation bp;        
         bp = new BeliefPropagation(pd, cl, EstimateQuery.getQueryAtomIds(queryFileName, db, mln));        
         bp.computeProbabilities();        
+    }
+    
+    public void runBoxPropagation() throws SQLException
+    {
+    	System.out.println("Starting Box Propagation");
+        ArrayList<Clause> cl = c.getCompressedClauses();
+        ArrayList<CBP.Compression.Predicate> pd = c.getCompressedPreds();
+        BoxPropagation bp;        
+        bp = new BoxPropagation(pd, cl, EstimateQuery.getQueryAtomIds(queryFileName, db, mln));        
+        bp.computeBoxProbabilities();        	
     }
 /*
     public void printAllTablesinSchema()
