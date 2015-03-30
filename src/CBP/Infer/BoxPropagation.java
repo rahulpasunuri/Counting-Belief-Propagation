@@ -60,7 +60,7 @@ public class BoxPropagation {
     	{
     		//create a tree for every query..
     		Tree t = new Tree(this.fg, q.id);
-    		
+    		break; // TODO: remove this..
     	}
     }
     

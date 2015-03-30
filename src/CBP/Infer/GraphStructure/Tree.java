@@ -25,7 +25,7 @@ public class Tree {
 	
 	private void runBFS()
 	{
-		System.out.println("Creating a Tree for the Query node");
+		System.out.println("\nCreating a Tree for the Query node");
 		List<Integer> visitedIds = new ArrayList<Integer>();
 		root = new TreeNode(fg.getGraph().getClusteredPredicateVertexByID(queryId), null); //parent is null for root.
 		visitedIds.add(queryId);
@@ -45,6 +45,7 @@ public class Tree {
 					if(!visitedIds.contains(child.getNode().getID()))
 					{
 						//create a new Tree node as this is the first time it is being visited..
+						visitedIds.add(child.getNode().getID()); //mark that the node is visited..
 						TreeNode childTreeNode =new TreeNode(child, tn); 
 						q2.add(childTreeNode);
 						tn.AddChild(childTreeNode);
@@ -70,7 +71,8 @@ public class Tree {
 			for(TreeNode tn : q)
 			{
 				tn.printNode();
-				for(TreeNode ch : tn.getChildren())
+				List<TreeNode> children =tn.getChildren(); 
+				for(TreeNode ch : children)
 				{
 					q2.add(ch);
 				}
