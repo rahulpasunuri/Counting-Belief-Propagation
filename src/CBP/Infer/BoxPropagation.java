@@ -5,6 +5,7 @@ import CBP.Compression.Predicate;
 import CBP.Infer.GraphStructure.Edge;
 import CBP.Infer.GraphStructure.FactorGraph;
 import CBP.Infer.GraphStructure.Graph;
+import CBP.Infer.GraphStructure.Tree;
 import CBP.Infer.GraphStructure.Message;
 import CBP.Infer.GraphStructure.Vertex;
 import java.io.BufferedWriter;
@@ -58,7 +59,8 @@ public class BoxPropagation {
     	for(Query q : this.queries)
     	{
     		//create a tree for every query..
-    		System.out.println(q.query+Integer.toString(q.id));
+    		Tree t = new Tree(this.fg, q.id);
+    		
     	}
     }
     
