@@ -38,5 +38,23 @@ public class TreeNode {
 		}
 		return false;
 	}
+	
+	public List<TreeNode> getChildren()
+	{
+		return children;
+	}
+	
+	public void printNode()
+	{
+		String s="Predicate";
+		if(this.isClauseNode())
+		{
+			s="Clause";
+		}
+		s+=" id:";
+		s+=Integer.toString(this.current.getNode().getID());
+		s+="\t";
+		System.out.print(s);
+	}
 
 }

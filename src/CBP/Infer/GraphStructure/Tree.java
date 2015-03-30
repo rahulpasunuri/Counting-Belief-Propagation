@@ -19,11 +19,13 @@ public class Tree {
 		//creates a tree using the query as root.
 		this.queryId= queryId;
 		this.fg = g;
+		runBFS();
 	}
 	
 	
 	private void runBFS()
 	{
+		System.out.println("Creating a Tree for the Query node");
 		List<Integer> visitedIds = new ArrayList<Integer>();
 		root = new TreeNode(fg.getGraph().getClusteredPredicateVertexByID(queryId), null); //parent is null for root.
 		visitedIds.add(queryId);
@@ -51,6 +53,33 @@ public class Tree {
 			}
 			//swap q2 with q1
 			q1=q2;
-		}		
+		}
+		printTree();
 	}
+
+	private void printTree()
+	{
+		//prints a level order view of tree
+		//for debugging purposes.
+		System.out.println("Printing Level Order View of Tree");
+		Queue<TreeNode> q = new LinkedList<TreeNode>();
+		q.add(root);
+		while(!q.isEmpty())
+		{
+			Queue<TreeNode> q2=new LinkedList<TreeNode>();
+			for(TreeNode tn : q)
+			{
+				tn.printNode();
+				for(TreeNode ch : tn.getChildren())
+				{
+					q2.add(ch);
+				}
+			}
+			//swap queues
+			q=q2;
+			System.out.println(); // a new line to separate different levels..
+		}
+		System.out.println("End Printing Level Order View of Tree");
+	}
+
 }
