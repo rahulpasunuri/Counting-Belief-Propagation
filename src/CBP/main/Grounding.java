@@ -42,6 +42,8 @@ public class Grounding extends Ground
         ground();
         UIMan.println("\n\n>>> Grounding completed.....");
         
+        long startInference = System.nanoTime();
+        
         Compression cp = new Compression(grounding, opt.addEvidence,start, opt.noOfIterations, opt.fquery, opt.fprog);
         cp.setQueryAtoms(opt.fquery);
         if(!options.runBox)
@@ -52,6 +54,10 @@ public class Grounding extends Ground
         {
         	cp.runBoxPropagation();
         }
+        long endInference = System.nanoTime();
+        
+        System.out.println("Time taken(in micro seconds) for inference is "+Long.toString((endInference-startInference)/ (long)Math.pow(10, 6)) );
+        
         cleanUp();        
     }
 
