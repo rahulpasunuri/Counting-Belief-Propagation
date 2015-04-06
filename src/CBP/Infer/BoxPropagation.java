@@ -54,12 +54,14 @@ public class BoxPropagation {
 	
     private void run()
     {
-    	//TODO
-    	System.out.println("Printin Queries..");
+    	//loop over queries..
     	for(Query q : this.queries)
     	{
     		//create a tree for every query..
     		Tree t = new Tree(this.fg, q.id);
+    		
+    		
+    		
     		break; // TODO: remove this..
     	}
     }

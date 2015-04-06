@@ -13,8 +13,18 @@ public class BoxMessage {
 		this.isSimplex = isSimplex;
 		this.isPredicateMessage = isPredicateMessage; 
 		this.uBound = uBound;
-		this.lBound = lBound;
+		this.lBound = lBound;		
 	}
+	
+	public BoxMessage(boolean isPredicateMessage)
+	{
+		//default constructor for the simplex message..
+		isSimplex=true;
+		uBound=1;
+		lBound=1;
+		this.isPredicateMessage=isPredicateMessage;
+	}
+	
 	
 	public boolean getIsSimplex()
 	{

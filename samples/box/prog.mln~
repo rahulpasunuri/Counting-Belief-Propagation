@@ -1,0 +1,13 @@
+// Evidence
+Drinks(person)
+// Some evidence, some query
+Smokes(person)
+// Query
+Cancer(person)
+
+// Rules
+
+// Smokes(x) => Cancer(x)
+0.5  Smokes(a1) v Cancer(a1)
+0.5  Smokes(a1) v Cancer(a1)
+0.5  Cancer(a1) v Drinks(a1)

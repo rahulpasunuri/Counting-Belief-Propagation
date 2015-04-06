@@ -52,6 +52,7 @@ public class Grounding extends Ground
         }
         else
         {
+        	System.out.println("Running Box Propagation");
         	cp.runBoxPropagation();
         }
         long endInference = System.nanoTime();

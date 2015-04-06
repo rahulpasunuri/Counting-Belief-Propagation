@@ -44,6 +44,11 @@ public class TreeNode {
 		return children;
 	}
 	
+	public TreeNode getParent()
+	{
+		return parent;		
+	}
+	
 	public void printNode()
 	{
 		String s="Predicate";
