@@ -86,66 +86,8 @@ public class Tree {
 		//printTree();
 	}
 
-	public void runBoxPropagation()
+	public BoxMessage runBoxPropagation()
 	{
-		/*
-		List<TreeNode> liNodes = leaves;
-		List<TreeNode> parents;
-		while(true)
-		{	
-			parents= new ArrayList<TreeNode>();		
-			//get the parents of the leaf nodes..
-			for(TreeNode tn: liNodes)
-			{			
-				TreeNode p =tn.getParent();
-				if(p!=null)
-				{
-					//check whether it is a new parent or not..
-					if(parents.size()==0)
-					{
-						parents.add(p);					
-					}
-					else
-					{
-						int size = parents.size();
-						if(parents.get(size-1)!=p)
-						{
-							//new parent
-							parents.add(p);
-						}
-					}
-				}			
-			}
-			
-			if(parents.size()==0)
-			{
-				//compute probabilities here..TODO
-				break; //box propagation complete..
-				
-			}
-			
-			for(TreeNode tn : parents)
-			{
-				if(tn.isClauseNode())
-				{
-					//the parent is clause node..
-					//all its children will be predicate nodes..					
-					for(TreeNode ch : liNodes)
-					{
-						
-					}
-				}
-				else
-				{
-					//the parent is predicate node.
-					//all children will be clause node..
-					
-				}
-			}
-			
-			liNodes=parents; //go to the next level of message passing..				
-		}
-		*/
 		List<BoxMessage> messages = new ArrayList<BoxMessage>();
 		for(TreeNode ch : root.getChildren())
 		{			
@@ -165,9 +107,13 @@ public class Tree {
 		lower /=sum;
 		upper /=sum;
 		
+		/*
 		System.out.println("Upper Bound is "+Double.toString(upper));
 		System.out.println("Lower Bound is "+Double.toString(lower));
 		System.out.println();
+		*/
+		
+		return new BoxMessage(lower, upper);
 	}
 	
 	private void printLeaves()

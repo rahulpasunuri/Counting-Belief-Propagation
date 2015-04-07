@@ -1,5 +1,6 @@
 package CBP.Infer;
 
+import CBP.Compression.BoxMessage;
 import CBP.Compression.Clause;
 import CBP.Compression.Predicate;
 import CBP.Infer.GraphStructure.Edge;
@@ -13,7 +14,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-
+import java.io.FileWriter;
 
 public class BoxPropagation {
     private final ArrayList<Predicate> preds;
@@ -31,29 +32,36 @@ public class BoxPropagation {
         g = fg.getGraph();
         vertices = g.getVertices();  
         this.queries=queries;
-        run();
     }
     
-
-	
-    private void run()
+    public void run() throws IOException
     {
+        System.out.println("Computing Probabilities");
+        String fileName = "results.txt";
+        File file = new File(fileName);
+
+        // if file doesn't exists, then create it
+        if (!file.exists())
+        {
+            file.createNewFile();
+        }
+
+        FileWriter fw = new FileWriter(file.getAbsoluteFile());
+        BufferedWriter bw = new BufferedWriter(fw);        
+        
     	//loop over queries..
     	for(Query q : this.queries)
     	{
     		//create a tree for every query..
     		Tree t = new Tree(this.fg, q.id);
-    		
-    		
-    		
-    		break; // TODO: remove this..
+    		BoxMessage bm = t.runBoxPropagation();    		
+    		String temp = q.query+": ["+bm.getLowerBound()+", "+bm.getUpperBound()+"]\n";
+    		bw.write(temp);
+    		//break; // TODO: remove this..
     	}
-    }
-    
-    public void computeBoxProbabilities()
-    {
-    	//TODO
-    	
+    	bw.flush();
+        bw.close();    
+        System.out.println("Results have been saved in: "+fileName);
     }
 }
 

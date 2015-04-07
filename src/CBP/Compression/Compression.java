@@ -52,14 +52,14 @@ public class Compression
         bp.computeProbabilities();        
     }
     
-    public void runBoxPropagation() throws SQLException
+    public void runBoxPropagation() throws SQLException, IOException
     {
     	System.out.println("Starting Box Propagation");
         ArrayList<Clause> cl = c.getCompressedClauses();
         ArrayList<CBP.Compression.Predicate> pd = c.getCompressedPreds();
         BoxPropagation bp;        
         bp = new BoxPropagation(pd, cl, EstimateQuery.getQueryAtomIds(queryFileName, db, mln));        
-        bp.computeBoxProbabilities();        	
+        bp.run(); //runs box propagation
     }
 /*
     public void printAllTablesinSchema()

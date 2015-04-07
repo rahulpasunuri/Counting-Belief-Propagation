@@ -151,7 +151,7 @@ public class TreeNode {
 				}
 			}
 		}
-		return new BoxMessage(lower, upper); //this line will never be executed.
+		return new BoxMessage(lower, upper);
 	}
 	
 	public TreeNode(Vertex current, TreeNode parent)
