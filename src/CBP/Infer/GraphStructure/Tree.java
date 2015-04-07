@@ -52,12 +52,19 @@ public class Tree {
 						//create a new Tree node as this is the first time it is being visited..
 						visitedIds.add(child.getNode().getID()); //mark that the node is visited..
 						TreeNode childTreeNode =new TreeNode(child, tn); 
-						q2.add(childTreeNode);
-						tn.AddChild(childTreeNode);
+
 						if(tn.isClauseNode())
 						{
 							tn.AddChildNegationProperty(!e.getSign()); //note the negation of sign property..
 						}
+						else
+						{
+							//the child node is clause node..
+							//it needs to know whether the parent is negated or not..
+							childTreeNode.isParentNegated=!e.getSign();
+						}
+						q2.add(childTreeNode);
+						tn.AddChild(childTreeNode);
 					}
 				}
 				tn.isLeaf=isLeaf;

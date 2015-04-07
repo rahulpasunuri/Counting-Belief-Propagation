@@ -14,7 +14,7 @@ public class TreeNode {
 	
 	//below two attributes are only meaningful for clause tree nodes.
 	private List<Boolean> isNegated;
-	private boolean isParentNegated; 
+	public boolean isParentNegated; 
 	
 	
 	//map from node id to corresponding message
@@ -80,8 +80,6 @@ public class TreeNode {
 			{
 				double prod=1;				
 				boolean isTrue=false;
-				//save the isparent negated property .. TODO...
-
 				int strIndex=0;
 				for(BoxMessage bm : liMsg)
 				{
