@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
+import CBP.Compression.BoxMessage;
 import CBP.Infer.GraphStructure.FactorGraph;;
 
 
@@ -41,11 +42,13 @@ public class Tree {
 			{
 				Vertex currVertex = tn.getVertex();
 				List<Edge> children = currVertex.getNeighbors();
+				boolean isLeaf=true;
 				for(Edge e : children)
 				{
 					Vertex child = e.getNeighborVertex(currVertex);
-					if(!visitedIds.contains(child.getNode().getID()))
+					if(!visitedIds.contains(child.getNode().getID())) //check this logic..TODO
 					{
+						isLeaf=false;
 						//create a new Tree node as this is the first time it is being visited..
 						visitedIds.add(child.getNode().getID()); //mark that the node is visited..
 						TreeNode childTreeNode =new TreeNode(child, tn); 
@@ -53,6 +56,7 @@ public class Tree {
 						tn.AddChild(childTreeNode);
 					}
 				}
+				tn.isLeaf=isLeaf;
 			}
 
 			if(q2.isEmpty())
@@ -73,6 +77,7 @@ public class Tree {
 
 	public void runBoxPropagation()
 	{
+		/*
 		List<TreeNode> liNodes = leaves;
 		List<TreeNode> parents;
 		while(true)
@@ -113,8 +118,11 @@ public class Tree {
 				if(tn.isClauseNode())
 				{
 					//the parent is clause node..
-					//all its children will be predicate nodes..
-					
+					//all its children will be predicate nodes..					
+					for(TreeNode ch : liNodes)
+					{
+						
+					}
 				}
 				else
 				{
@@ -126,7 +134,29 @@ public class Tree {
 			
 			liNodes=parents; //go to the next level of message passing..				
 		}
-		 
+		*/
+		List<BoxMessage> messages = new ArrayList<BoxMessage>();
+		for(TreeNode ch : root.getChildren())
+		{			
+			BoxMessage b = ch.getParentMessage();
+			messages.add(b);
+		}
+		
+		//compute probabilities
+		double lower=1, upper=1;
+		for(BoxMessage b : messages)
+		{
+			lower*=b.getLowerBound();
+			upper*=b.getUpperBound();
+		}
+		
+		double sum = lower+upper;
+		lower /=sum;
+		upper /=sum;
+		
+		System.out.println("Upper Bound is "+Double.toString(upper));
+		System.out.println("Lower Bound is "+Double.toString(lower));
+		System.out.println();
 	}
 	
 	private void printLeaves()

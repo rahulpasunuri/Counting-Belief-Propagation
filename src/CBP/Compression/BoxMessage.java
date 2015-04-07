@@ -41,7 +41,7 @@ public class BoxMessage {
 		return uBound;		
 	}
 	
-	public double getLowerrBound()
+	public double getLowerBound()
 	{
 		return lBound;		
 	}
