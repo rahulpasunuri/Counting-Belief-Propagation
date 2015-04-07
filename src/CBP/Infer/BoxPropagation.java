@@ -34,23 +34,7 @@ public class BoxPropagation {
         run();
     }
     
-    private ArrayList<String> createTFCombinations(int length)
-    {
-    	ArrayList<String> res = new ArrayList<String>();
-    	if(length==1)
-    	{
-    		res.add("T");
-    		res.add("F");
-    		return res;
-    	}
-    	ArrayList<String> t = createTFCombinations(length-1);
-    	for(String s : t)
-    	{
-    		res.add("T"+s);
-    		res.add("F"+s);
-    	}
-    	return res;
-    }
+
 	
     private void run()
     {

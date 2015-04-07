@@ -54,6 +54,10 @@ public class Tree {
 						TreeNode childTreeNode =new TreeNode(child, tn); 
 						q2.add(childTreeNode);
 						tn.AddChild(childTreeNode);
+						if(tn.isClauseNode())
+						{
+							tn.AddChildNegationProperty(!e.getSign()); //note the negation of sign property..
+						}
 					}
 				}
 				tn.isLeaf=isLeaf;
