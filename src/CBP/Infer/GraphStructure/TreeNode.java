@@ -133,6 +133,13 @@ public class TreeNode {
 			double sum=lower+upper;			
 			lower /=sum;
 			upper /=sum;
+			
+			if(lower>upper)
+			{
+				double temp=lower;
+				lower=upper;
+				upper=temp;
+			}
 		}
 		else
 		{		
