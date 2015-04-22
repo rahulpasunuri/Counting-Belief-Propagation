@@ -10,6 +10,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+
 import tuffy.db.RDB;
 import tuffy.mln.MarkovLogicNetwork;
 /**
@@ -209,35 +211,42 @@ public class Compress
 	//updates colors of all the clauses..
     private void assignNewClauseColors()
     {
-        ArrayList<Integer> ids = new ArrayList<Integer>();
+    	//used to check the presence of hash
+    	HashMap<Integer, Boolean> ids = new HashMap<Integer, Boolean>();
+        //ArrayList<Integer> ids = new ArrayList<Integer>();
 
         int id = 0;
-        ArrayList<String> colors = new ArrayList<String>();
-        int cID = 65;
-
+        HashMap<String, Boolean> colors_list = new HashMap<String, Boolean>();
+        //maps hash code to color
+        HashMap<Integer, String> colors = new HashMap<Integer, String>();
+        int cID = 65;       
+        
         for (Clause c : clauses)
         {
             int hash = c.msg.getMessage().hashCode();
-            if (!ids.contains(hash))
+            //if (!ids.contains(hash))
+            if(ids.get(hash) == null)
             {
 //                This implies that the message is not seen before
 //                so u have to assign a new color here
 //                ids.add(hash);
             	            	
             	//65 = A, 90=Z
+                String nColor = Character.toString((char) cID);
+                nColor = "C" + nColor;
+                cID++;
+            	/*
                 if (cID == 91) //start again from 65..
                 {
                     cID = 65;
                 }
 
-                String nColor = Character.toString((char) cID);
-                nColor = "C" + nColor;
-                cID++;
+
                 int t = 0;
                 while (true)
                 {
                     t++;
-                    if (colors.contains(nColor))
+                    if (colors_list.containsKey(nColor)==true)
                     {
                         if (!nColor.contains("[0-9") && cID <= 91) //what is this contains operation doing ??
                         {
@@ -261,13 +270,13 @@ public class Compress
                         break;
                     }
                 }
-
+				*/
                 id = id + 1;
 
                 c.color = nColor;
-                ids.add(hash);
-                colors.add(nColor);
-
+                ids.put(hash, true);
+                colors.put(hash, nColor);
+                colors_list.put(nColor, true);
                 if (!c.oldColor.equals(c.color))
                 {
                     colorChanged = true;
@@ -278,8 +287,7 @@ public class Compress
             {
             	//the clause's color already exists..
             	//get the corresponding color
-            	int x = ids.indexOf(hash);
-                String nColor = colors.get(x);
+                String nColor = colors.get(hash);
                 c.color = nColor;
                 if (!c.oldColor.equals(c.color))
                 {
@@ -296,10 +304,20 @@ public class Compress
     {
     	//assigns new colors to the predicate vertices..
 //        ASCII Code for A = 65, Z=90
-        ArrayList<Integer> ids = new ArrayList<Integer>();;
+    	//used to check the presence of hash
+    	HashMap<Integer, Boolean> ids = new HashMap<Integer, Boolean>();
+        //ArrayList<Integer> ids = new ArrayList<Integer>();
+
         int id = 0;
-        ArrayList<String> colors = new ArrayList<String>();
-        char cID = 64;
+        HashMap<String, Boolean> colors_list = new HashMap<String, Boolean>();
+        //maps hash code to color
+        HashMap<Integer, String> colors = new HashMap<Integer, String>();
+    	
+    	
+        //ArrayList<Integer> ids = new ArrayList<Integer>();;
+
+        //ArrayList<String> colors = new ArrayList<String>();
+        char cID = 0;
         for (Predicate p : predicates)
         {
             cID++;
@@ -307,16 +325,18 @@ public class Compress
             Collections.sort(msg);
             int hash = msg.hashCode();
 
-            if (!ids.contains(hash))
+            if (ids.get(hash)==null)
             {
                 String nColor = String.valueOf((cID));
                 nColor = "P" + nColor;
                 int t = 0;
+                
+                /*
                 while (true)
                 {
 
                     t++;
-                    if (colors.contains(nColor))
+                    if (colors_list.containsKey(nColor))
                     {
                         if (!nColor.contains("[0-9") && cID <= 91)
                         {
@@ -337,11 +357,14 @@ public class Compress
                         break;
                     }
                 }
-
+				*/
+                //nColor += Integer.toString(cID);
                 id = id + 1;
 
-                ids.add(hash);
-                colors.add(nColor);
+                //ids.add(hash);
+                ids.put(hash, true);
+                colors.put(hash, nColor);
+                colors_list.put(nColor,true);
                 p.color = nColor;
                 if (!p.oldColor.equals(p.color))
                 {
@@ -351,8 +374,7 @@ public class Compress
             } 
             else
             {
-                int x = ids.indexOf(hash);
-                String nColor = colors.get(x);
+                String nColor = colors.get(hash);
                 p.color = nColor;
                 if (!p.oldColor.equals(p.color))
                 {
@@ -373,12 +395,16 @@ public class Compress
         while (colorChanged)
         {
             colorChanged = false;
+            System.out.println("updating messages");
             updateMessages();
+            System.out.println("assigning new colors");
             assignNewPredColors();
             assignNewClauseColors();
+            
             if(i==k)
             	break;
             i++;
+            System.out.println("Current Iteration #"+i);
         }
         System.out.println("# of iterations: " + i);    
     }
