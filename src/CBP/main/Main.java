@@ -39,9 +39,8 @@ public class Main
         Config.disable_partition =true;
         
         if (!options.isDLearningMode)
-        {            
-            long startTime = System.nanoTime();
-            new Grounding().run(options,startTime);            
+        {                        
+            new Grounding().run(options);            
         } 
     }
 

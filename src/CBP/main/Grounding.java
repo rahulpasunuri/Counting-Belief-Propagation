@@ -33,8 +33,9 @@ public class Grounding extends Ground
     //private RDB db;
 
     //MarkovLogicNetwork mln1;
-    public void run(CommandOptions opt,long start) throws SQLException, IOException
+    public void run(CommandOptions opt) throws SQLException, IOException
     {
+    	long start = System.nanoTime();
         
         UIMan.println(">>> Parsing the Files for Grounding.....");
         setUp(opt);
@@ -58,7 +59,7 @@ public class Grounding extends Ground
         long endInference = System.nanoTime();
         
         System.out.println("Time taken(in micro seconds) for inference is "+Long.toString((endInference-startInference)/ (long)Math.pow(10, 6)) );
-        
+        System.out.println("Total Time taken(in micro seconds) is "+Long.toString((endInference-start)/ (long)Math.pow(10, 6)) );
         cleanUp();        
     }
 
