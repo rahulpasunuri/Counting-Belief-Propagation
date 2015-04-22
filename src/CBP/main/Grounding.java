@@ -58,8 +58,8 @@ public class Grounding extends Ground
         }
         long endInference = System.nanoTime();
         
-        System.out.println("Time taken(in micro seconds) for inference is "+Long.toString((endInference-startInference)/ (long)Math.pow(10, 6)) );
-        System.out.println("Total Time taken(in micro seconds) is "+Long.toString((endInference-start)/ (long)Math.pow(10, 6)) );
+        System.out.println("Time taken(in milli seconds) for inference is "+Long.toString((endInference-startInference)/ (long)Math.pow(10, 6)) );
+        System.out.println("Total Time taken(in milli seconds) is "+Long.toString((endInference-start)/ (long)Math.pow(10, 6)) );
         cleanUp();        
     }
 

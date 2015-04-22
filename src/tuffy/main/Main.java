@@ -21,7 +21,7 @@ public class Main {
 		if(options == null){
 			return;
 		}
-		
+		long start = System.nanoTime();
 		if(!options.isDLearningMode){
 			// INFERENCE
 			if(!options.disablePartition){
@@ -46,9 +46,8 @@ public class Main {
 				l.run(options);
 			}
 		}
-		
-		
-
+		long end = System.nanoTime();
+		System.out.println("Total Time taken(in milli seconds) is "+Long.toString((end-start)/ (long)Math.pow(10, 6)) );
 	}
 	
 }
