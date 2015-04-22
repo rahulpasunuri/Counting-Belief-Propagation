@@ -44,10 +44,12 @@ public class Compression
     
     public void runBP() throws IOException, SQLException
     {
-    	System.out.println("Starting BP");
+    	
         ArrayList<Clause> cl = c.getCompressedClauses();
         ArrayList<CBP.Compression.Predicate> pd = c.getCompressedPreds();
-        BeliefPropagation bp;        
+        BeliefPropagation bp;
+        
+        System.out.println("Starting BP");
         bp = new BeliefPropagation(pd, cl, EstimateQuery.getQueryAtomIds(queryFileName, db, mln));        
         bp.computeProbabilities();        
     }

@@ -235,6 +235,14 @@ public class BeliefPropagation
                             m.False = f;
                         }
                     }
+                    
+                    //normalize the message
+                    double sum = m.True+m.False;
+                    if(sum!=0)
+                    {
+                    	m.True /= sum;
+                    	m.False /=sum;
+                    }
     				//System.out.println("Priting Predicate Message "+m.True+"\t"+m.False);
                     /*
     				Message oMsg = n.getPredMsg();
@@ -277,13 +285,19 @@ public class BeliefPropagation
                         True *= Math.pow(m.True, k);
                         False *= Math.pow(m.False, k);
                     }
-
-                    double newProb = True / (True+False);
+                    
+                    double newProb=0;
+                    if(True+False!=0)
+                    {
+                    	newProb=True / (True+False);
+                    }
+                    
                     if(!msgChanged && Math.abs(newProb-p.probability) > 0.1)
                     {
                     	msgChanged=true;
                     }
                     p.probability=newProb;
+                    System.out.println(newProb+"\t"+p.probability);
             	}                	
             }            	            	
         }
@@ -354,9 +368,16 @@ public class BeliefPropagation
         {            
             Vertex v = g.getClusteredPredicateVertexByID(q.id);
             Predicate p = v.getPredicate();
-
-            String temp = q.query+": "+p.probability+"\n";;                                
-            bw.write(temp);            
+            if(p.probability!=0)
+            {
+            	String temp = q.query+": "+p.probability+"\n";;                                
+            	bw.write(temp);            
+            }
+            
+            if(q.query == "category(Paper2504,Operating_Systems)")
+            {
+            	System.out.println("True is "+p.probability);            	
+            }            
         }
         bw.flush();
         bw.close();    
