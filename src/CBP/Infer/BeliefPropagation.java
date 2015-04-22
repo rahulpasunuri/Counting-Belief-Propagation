@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.sun.xml.internal.ws.handler.ClientMessageHandlerTube;
 
@@ -27,7 +28,7 @@ import com.sun.xml.internal.ws.handler.ClientMessageHandlerTube;
  */
 public class BeliefPropagation
 {
-
+	private static HashMap<Integer, ArrayList<String>> tfComb;
     private final ArrayList<Predicate> preds;
     private final ArrayList<Clause> clauses;
     private int iteration = 1;
@@ -38,6 +39,10 @@ public class BeliefPropagation
     private ArrayList<Query> queries;
     public BeliefPropagation(ArrayList<Predicate> p, ArrayList<Clause> c, ArrayList<Query> queries)
     {
+    	if(BeliefPropagation.tfComb==null)
+    	{
+    		BeliefPropagation.tfComb=new HashMap<Integer, ArrayList<String>>();
+    	}
         preds = p;
         clauses = c;
         fg = new FactorGraph(preds, clauses);
@@ -49,6 +54,11 @@ public class BeliefPropagation
 
     private ArrayList<String> createTFCombinations(int length)
     {
+    	if(BeliefPropagation.tfComb.containsKey(length))
+    	{
+    		return BeliefPropagation.tfComb.get(length);
+    	}
+    	
     	ArrayList<String> res = new ArrayList<String>();
     	if(length==1)
     	{
@@ -62,6 +72,7 @@ public class BeliefPropagation
     		res.add("T"+s);
     		res.add("F"+s);
     	}
+    	BeliefPropagation.tfComb.put(length, res);
     	return res;
     }
     

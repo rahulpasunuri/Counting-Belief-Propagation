@@ -216,7 +216,7 @@ public class Compress
         //ArrayList<Integer> ids = new ArrayList<Integer>();
 
         int id = 0;
-        HashMap<String, Boolean> colors_list = new HashMap<String, Boolean>();
+        //HashMap<String, Boolean> colors_list = new HashMap<String, Boolean>();
         //maps hash code to color
         HashMap<Integer, String> colors = new HashMap<Integer, String>();
         int cID = 65;       
@@ -229,54 +229,16 @@ public class Compress
             {
 //                This implies that the message is not seen before
 //                so u have to assign a new color here
-//                ids.add(hash);
-            	            	
-            	//65 = A, 90=Z
+            	
                 String nColor = Character.toString((char) cID);
                 nColor = "C" + nColor;
                 cID++;
-            	/*
-                if (cID == 91) //start again from 65..
-                {
-                    cID = 65;
-                }
-
-
-                int t = 0;
-                while (true)
-                {
-                    t++;
-                    if (colors_list.containsKey(nColor)==true)
-                    {
-                        if (!nColor.contains("[0-9") && cID <= 91) //what is this contains operation doing ??
-                        {
-                            nColor = Character.toString((char) cID);
-                            nColor = "C" + nColor;
-                            cID++;
-
-                        } 
-                        else
-                        {
-                            cID = 65;
-                            nColor = Character.toString((char) cID);
-                            nColor = "C" + nColor;
-                            nColor = nColor + t;
-                        }
-
-                    } 
-                    else
-                    {
-
-                        break;
-                    }
-                }
-				*/
                 id = id + 1;
 
                 c.color = nColor;
                 ids.put(hash, true);
                 colors.put(hash, nColor);
-                colors_list.put(nColor, true);
+                //colors_list.put(nColor, true);
                 if (!c.oldColor.equals(c.color))
                 {
                     colorChanged = true;
@@ -303,13 +265,12 @@ public class Compress
     private void assignNewPredColors()
     {
     	//assigns new colors to the predicate vertices..
-//        ASCII Code for A = 65, Z=90
     	//used to check the presence of hash
     	HashMap<Integer, Boolean> ids = new HashMap<Integer, Boolean>();
         //ArrayList<Integer> ids = new ArrayList<Integer>();
 
         int id = 0;
-        HashMap<String, Boolean> colors_list = new HashMap<String, Boolean>();
+        //HashMap<String, Boolean> colors_list = new HashMap<String, Boolean>();
         //maps hash code to color
         HashMap<Integer, String> colors = new HashMap<Integer, String>();
     	
@@ -330,41 +291,13 @@ public class Compress
                 String nColor = String.valueOf((cID));
                 nColor = "P" + nColor;
                 int t = 0;
-                
-                /*
-                while (true)
-                {
-
-                    t++;
-                    if (colors_list.containsKey(nColor))
-                    {
-                        if (!nColor.contains("[0-9") && cID <= 91)
-                        {
-                            nColor = Character.toString((char) cID);
-                            nColor = "C" + nColor;
-                            cID++;
-
-                        } else
-                        {
-                            cID = 65;
-                            nColor = Character.toString((char) cID);
-                            nColor = "C" + nColor;
-                            nColor = nColor + t;
-                        }
-                    } 
-                    else
-                    {
-                        break;
-                    }
-                }
-				*/
-                //nColor += Integer.toString(cID);
+      
                 id = id + 1;
 
                 //ids.add(hash);
                 ids.put(hash, true);
                 colors.put(hash, nColor);
-                colors_list.put(nColor,true);
+                //colors_list.put(nColor,true);
                 p.color = nColor;
                 if (!p.oldColor.equals(p.color))
                 {
@@ -395,9 +328,9 @@ public class Compress
         while (colorChanged)
         {
             colorChanged = false;
-            System.out.println("updating messages");
+            //System.out.println("updating messages");
             updateMessages();
-            System.out.println("assigning new colors");
+            //System.out.println("assigning new colors");
             assignNewPredColors();
             assignNewClauseColors();
             
@@ -425,13 +358,16 @@ public class Compress
     private void compression()
     {
         System.out.println("Running Compression");
-        ArrayList<String> colors = new ArrayList<String>();
+        int index=0;
+        HashMap<String, Integer> colors= new HashMap<String, Integer>();
+        //ArrayList<String> colors = new ArrayList<String>();
         for (Predicate p : predicates)
         {
         	//if the color is a new color
-            if (!colors.contains(p.color))
+            if (!colors.containsKey(p.color))
             {
-                colors.add(p.color);
+                colors.put(p.color, index);
+                index++;
                 comPredicates.add(p); //add it to the list of compressed predicates..
                 if (!p.clusters.contains(p.id))
                 {
@@ -441,7 +377,7 @@ public class Compress
             else
             {
             	//this color has already been seen.
-                int i = colors.indexOf(p.color);
+                int i = colors.get(p.color);
                 Predicate p1 = comPredicates.get(i);
                 if (!p1.clusters.contains(p.id))
                 {
@@ -451,14 +387,14 @@ public class Compress
         }
 
         colors.clear();
-
+        index=0;
         for (Clause c : clauses)
         {
             Clause clause = c;
             //if we encounter a new color
-            if (!colors.contains(clause.color))
+            if (!colors.containsKey(clause.color))
             {
-                colors.add(clause.color);
+                colors.put(clause.color, index);
 
                 if (!clause.clusters.contains(clause.id))
                 {
@@ -494,7 +430,7 @@ public class Compress
             } 
             else
             {
-                int i = colors.indexOf(clause.color);
+                int i = colors.get(clause.color);
                 Clause c1 = comClauses.get(i);
                 if (!c1.clusters.contains(clause.id))
                 {

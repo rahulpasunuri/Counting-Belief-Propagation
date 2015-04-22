@@ -230,7 +230,7 @@ public class EstimateQuery
 	            while ((line = br.readLine()) != null)
 	            {
 	            	line=line.trim();
-	            	if(line!="")
+	            	if(line!="" && line.length()>=2)
 	            	{
 		            	if(line.substring(0,2).equals("//") || line.substring(0,2).equals("\\"))
 		            	{
@@ -268,6 +268,7 @@ public class EstimateQuery
     	//ArrayList<Integer> liAtomIds = new ArrayList<Integer>();
     	
     	//get all query atom ids..
+    	/*
     	String s="";
     	try
     	{
@@ -300,7 +301,7 @@ public class EstimateQuery
     		//throw exception here..
     		System.out.println(e);    		
     	}
-    	
+    	*/
     	
     	for(String predName : liPredNames)
     	{  
@@ -322,7 +323,7 @@ public class EstimateQuery
                 }
             }
     		    		    		    		    		    		    		    		       		
-	        String q2 = "Select atomid, "+colString+" from "+pred.getRelName()+" where "+s;	        	        	        	     	        
+	        String q2 = "Select atomid, "+colString+" from "+pred.getRelName()+" where atomid in (Select atomid from mln0_atoms where isquery = TRUE and isqueryevid = FALSE and atomid is not NULL)";	        	        	        	     	        
 	        try
 	        {
 	            ResultSet rs = db.query(q2);	        	
