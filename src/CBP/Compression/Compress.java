@@ -395,7 +395,7 @@ public class Compress
             if (!colors.containsKey(clause.color))
             {
                 colors.put(clause.color, index);
-
+                index++;
                 if (!clause.clusters.contains(clause.id))
                 {
                     clause.clusters.add(clause.id);

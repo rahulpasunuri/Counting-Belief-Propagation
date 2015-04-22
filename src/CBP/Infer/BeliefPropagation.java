@@ -58,7 +58,7 @@ public class BeliefPropagation
     	{
     		return BeliefPropagation.tfComb.get(length);
     	}
-    	
+
     	ArrayList<String> res = new ArrayList<String>();
     	if(length==1)
     	{
