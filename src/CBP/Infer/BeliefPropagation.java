@@ -29,6 +29,7 @@ import com.sun.xml.internal.ws.handler.ClientMessageHandlerTube;
 public class BeliefPropagation
 {
 	private static HashMap<Integer, ArrayList<String>> tfComb;
+	private static int maxTFComb;
     private final ArrayList<Predicate> preds;
     private final ArrayList<Clause> clauses;
     private int iteration = 1;
@@ -42,6 +43,12 @@ public class BeliefPropagation
     	if(BeliefPropagation.tfComb==null)
     	{
     		BeliefPropagation.tfComb=new HashMap<Integer, ArrayList<String>>();
+    		ArrayList<String> single = new ArrayList<String>();
+    		single.add("T");
+    		single.add("F");
+    		BeliefPropagation.tfComb.put(1, single);
+    		
+    		BeliefPropagation.maxTFComb = 1;
     	}
         preds = p;
         clauses = c;
@@ -54,25 +61,32 @@ public class BeliefPropagation
 
     private ArrayList<String> createTFCombinations(int length)
     {
+    	//writing a iterative version instead of a recursive version to overcome the GC overhead exception.
     	if(BeliefPropagation.tfComb.containsKey(length))
     	{
     		return BeliefPropagation.tfComb.get(length);
     	}
-
     	ArrayList<String> res = new ArrayList<String>();
-    	if(length==1)
-    	{
-    		res.add("T");
-    		res.add("F");
-    		return res;
-    	}
-    	ArrayList<String> t = createTFCombinations(length-1);
-    	for(String s : t)
-    	{
-    		res.add("T"+s);
-    		res.add("F"+s);
-    	}
-    	BeliefPropagation.tfComb.put(length, res);
+    	
+    	int start=BeliefPropagation.maxTFComb;
+		for(int i= start+1; i<=length; i++)
+		{
+			res = new ArrayList<String>();
+			ArrayList<String> t = createTFCombinations(i-1);
+			System.out.println("Size is "+Integer.toString(t.size())+" for length "+Integer.toString(i-1));
+			int size = t.size();
+	    	for(int j=0; j<size; j++)
+	    	{
+	    		System.out.println(j);
+	    		res.add("T"+t.get(j));
+	    		res.add("F"+t.get(j));
+	    	}		    	
+	    	BeliefPropagation.tfComb.put(i, res);
+		}
+		System.out.println("Returning");
+		BeliefPropagation.maxTFComb = length;
+	
+    	
     	return res;
     }
     
@@ -83,7 +97,9 @@ public class BeliefPropagation
             ArrayList<Edge> neighbors = v.getNeighbors();
             if (v.getNode().isClause)
             {
-            	ArrayList<String> comb = createTFCombinations(v.getClause().getLiterals().size());
+            	
+            	
+            	
             	//message from clauses to predicates..
                 //Clauses
                 Clause c = v.getClause(); 
@@ -108,6 +124,7 @@ public class BeliefPropagation
     				}
     				else
     				{
+    					ArrayList<String> comb = createTFCombinations(v.getClause().getLiterals().size()-1);
 						m.True=0;
 						m.False=0;
     					for(String s : comb)
@@ -121,8 +138,7 @@ public class BeliefPropagation
 							for(Edge e : neighbors)
 							{
 								if(n.equals(e))
-								{
-									strIndex++;
+								{									
 									continue;
 								}
 
@@ -167,8 +183,8 @@ public class BeliefPropagation
 										tempTrue *= pmsg.False;
 										tempFalse *= pmsg.False;								
 									}									
-								}
-								strIndex++;
+									strIndex++;
+								}								
 							}
 							m.True += tempTrue;
 							m.False += tempFalse;													
@@ -297,7 +313,7 @@ public class BeliefPropagation
                     	msgChanged=true;
                     }
                     p.probability=newProb;
-                    System.out.println(newProb+"\t"+p.probability);
+                    //System.out.println(newProb+"\t"+p.probability);
             	}                	
             }            	            	
         }

@@ -324,9 +324,14 @@ public class Compress
 
     private void colorPassing()
     {
-        int i = 1;
+        int i = 0;
         while (colorChanged)
         {
+
+            if(i==k)
+            	break;
+            i++;
+            
             colorChanged = false;
             //System.out.println("updating messages");
             updateMessages();
@@ -334,9 +339,6 @@ public class Compress
             assignNewPredColors();
             assignNewClauseColors();
             
-            if(i==k)
-            	break;
-            i++;
             System.out.println("Current Iteration #"+i);
         }
         System.out.println("# of iterations: " + i);    
