@@ -296,7 +296,8 @@ public class Compress
         changePred = predicates.size();
         changeClause = clauses.size();
                 
-        while ( (colorChanged || i<=2) && i<max_iterations)
+        //while ( (colorChanged || i<=2) && i<max_iterations)
+        while(i<k)
         {
             float oldPred = changePred;
             float oldClause = changeClause;
@@ -313,7 +314,7 @@ public class Compress
             assignNewClauseColors();
             //System.out.println("Current iteration#: " + i);  
             
-
+            /*
             float percentChangePred = ((float)((oldPred-changePred)*100))/predicates.size();
             float percentChangeClause = ((float)(oldClause-changeClause*100))/clauses.size();
             float minLimit=6;
@@ -324,7 +325,8 @@ public class Compress
             if( i>=2 && percentChangePred  < minLimit && percentChangeClause < minLimit)
             {
             	break;
-            }            
+            } 
+            */           
         }
         System.out.println("Total Number of color passing iterations: " + i);    
     }
@@ -341,13 +343,14 @@ public class Compress
         return null;
     }
 
-    //This step is the last step for compressing the graph... 
+  //This step is the last step for compressing the graph... 
     private void compression()
     {
         System.out.println("Running Compression");
         int index=0;
         HashMap<String, Integer> colors= new HashMap<String, Integer>();
 
+        HashMap<Integer,Integer> predIdMap=new HashMap<Integer, Integer>(); 
         for (Predicate p : predicates)
         {
         	//if the color is a new color
@@ -359,6 +362,7 @@ public class Compress
                 {
                     p.clusters.add(p.id);
                 }
+                predIdMap.put(p.id, p.id);
                 comPredicates.add(p); //add it to the list of compressed predicates..
             } 
             else
@@ -370,94 +374,99 @@ public class Compress
                 {
                     p1.clusters.add(p.id);
                 }
+                predIdMap.put(p.id, p1.id);
             }
         }
 
-        colors.clear();
-        index=0;
+        colors.clear();        
+        //map the old literal ids to new literal ids..
+        for(Clause clause : clauses)
+        {
+            ArrayList<Integer> newLits = new ArrayList<Integer>();
+            for (int k : clause.literals)
+            {               
+                int t = predIdMap.get(Math.abs(k));
+                if (k < 0)
+                {
+                    t = t * -1;
+                }
+            	
+                if (!newLits.contains(t))
+                {
+                    newLits.add(t);                                
+                }                                                                                   
+                clause.incrementIdenticalMessages(t);                        
+            }    
+            clause.literals = newLits;     	        	
+        }
+        
+        HashMap<String, ArrayList<Clause>> colorMap=new HashMap<String, ArrayList<Clause>>();
+        index=0;        
         for (Clause clause  : clauses)
         {
             //Clause clause = c;
             //if we encounter a new color
-            if (!colors.containsKey(clause.color))
+            if (!colorMap.containsKey(clause.color))
             {
-                colors.put(clause.color, index);
                 index++;
                 if (!clause.clusters.contains(clause.id))
                 {
                     clause.clusters.add(clause.id);
                 }
-
-                ArrayList<Integer> newLits = new ArrayList<Integer>();
-                for (int k : clause.literals)
-                {
-                    for (Predicate p : comPredicates)
-                    {
-                        if (p.clusters.contains(Math.abs(k)))
-                        {
-                            int t = p.id;
-                            if (k < 0)
-                            {
-                                t = t * -1;
-                            }
-                        	
-                            if (!newLits.contains(t))
-                            {
-                                newLits.add(t);                                
-                            }                                                                                   
-                            clause.incrementIdenticalMessages(t);
-                            
-                            break;
-                        }
-                    }
-                }
-        
-                clause.literals = newLits;
                 comClauses.add(clause);
+            	ArrayList<Clause> temp = new ArrayList<Clause>();
+            	temp.add(clause);
+                colorMap.put(clause.color, temp);
             } 
             else
             {
-                int i = colors.get(clause.color);
-                Clause c1 = comClauses.get(i);
-                if (!c1.clusters.contains(clause.id))
+                ArrayList<Clause> l = colorMap.get(clause.color);
+                Clause final_clause=null;
+                for(Clause c : l)
                 {
-                    c1.clusters.add(clause.id);
+                	if(c.literals.size() != clause.literals.size())
+                	{
+                		continue;
+                	}
+                	for(int h=0; h<c.literals.size(); h++)
+                	{
+                		if(c.literals.get(h) != clause.literals.get(h))
+                		{
+                			continue;
+                		}                	
+                	}
+                	final_clause=c;
+                	break;
                 }
                 
-                
-                //add the current clusters literal information..
-                for (int k : clause.literals)
+                if(final_clause!=null)
+                {	                
+                	final_clause.clusters.add(clause.id);
+	                	               
+	                //add the current clusters literal information..
+	                for (int t : clause.literals)
+	                {	                	                    	
+	                	final_clause.incrementIdenticalMessages(t);	                                    
+	                }
+                }
+                else
                 {
-                    for (Predicate p : comPredicates)
+                    index++;
+                    if (!clause.clusters.contains(clause.id))
                     {
-                        if (p.clusters.contains(Math.abs(k)))
-                        {
-                            int t = p.id;
-                            if (k < 0)
-                            {
-                                t = t * -1;
-                            }
-                        	
-                            if (!c1.literals.contains(t))
-                            {
-                            	//System.out.println("what????????????/");
-                            	c1.literals.add(t);
-                            } 
-                            else
-                            {                            	
-                                c1.incrementIdenticalMessages(k);
-                            }
-                            break;
-                        }
+                        clause.clusters.add(clause.id);
                     }
-                }   
+                    comClauses.add(clause);
+                	ArrayList<Clause> temp = new ArrayList<Clause>();
+                	temp.add(clause);
+                    colorMap.put(clause.color, temp);	                	
+                }
             }
         }
 
         System.out.println("Predicates are compressed from "+predicates.size() + " predicates to  " + comPredicates.size()+" predicates");
         System.out.println("Clauses are compressed from "+clauses.size() + " clauses to " + comClauses.size()+" clauses");
     }
-
     ArrayList<Clause> getCompressedClauses()
     {
         return comClauses;
