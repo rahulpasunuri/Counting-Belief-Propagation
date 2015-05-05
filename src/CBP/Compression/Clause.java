@@ -64,11 +64,13 @@ public class Clause
     	{
     		return (Integer)noOfIdenticalMsgs.get(j);    		
     	}
-    	else
-    	{
-    		noOfIdenticalMsgs.put(new Integer(j), new Integer(1));
-    		return 1;
-    	}
+    	
+    	return -1;
+    	//else
+    	//{
+    	//	noOfIdenticalMsgs.put(new Integer(j), new Integer(1));
+    	//	return 1;
+    	//}
     }
     
     public void incrementIdenticalMessages(int literalId)

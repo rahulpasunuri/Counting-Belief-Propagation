@@ -7,6 +7,7 @@
 package CBP.Compression;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  *
@@ -16,6 +17,11 @@ class PMessage
 {
     private ArrayList<String> msg = new ArrayList<String>();
 
+    public void sort()
+    {
+    	Collections.sort(msg);  	
+    }
+    
     public ArrayList<String> getMessage()
     {
     	return msg;

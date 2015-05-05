@@ -28,8 +28,7 @@ public class Compression
     MarkovLogicNetwork mln;
     RDB db;
     Grounding grounding;
-    private final Compress c;
-    private String queryAtoms;       
+    private final Compress c;       
     String queryFileName;
     public Compression(Grounding g, String s, long stat, int noOfIterations, String queryFileName, String progFileName)
     {
@@ -39,12 +38,13 @@ public class Compression
         db.schema = Config.db_schema;
         this.queryFileName=queryFileName;
         new ParseEvidence(db).parse(s,mln);
-        c= new Compress(db, mln,noOfIterations, progFileName, true); //last variable is just a debug parameter.
+        c= new Compress(db, noOfIterations, progFileName);
     }
     
     public void runBP() throws IOException, SQLException
     {
-    	
+    	//return; //TODO
+    	///*
         ArrayList<Clause> cl = c.getCompressedClauses();
         ArrayList<CBP.Compression.Predicate> pd = c.getCompressedPreds();
         BeliefPropagation bp;
@@ -52,6 +52,7 @@ public class Compression
         System.out.println("Starting BP");
         bp = new BeliefPropagation(pd, cl, EstimateQuery.getQueryAtomIds(queryFileName, db, mln));        
         bp.computeProbabilities();        
+    	//*/
     }
     
     public void runBoxPropagation() throws SQLException, IOException
@@ -62,56 +63,5 @@ public class Compression
         BoxPropagation bp;        
         bp = new BoxPropagation(pd, cl, EstimateQuery.getQueryAtomIds(queryFileName, db, mln));        
         bp.run(); //runs box propagation
-    }
-/*
-    public void printAllTablesinSchema()
-    {
-        try
-        {
-            //Statement statement = (Statement) connection.createStatement();
-            String sql = "SELECT table_name FROM information_schema.tables WHERE table_schema='" + db.schema + "'";
-            ResultSet rs = db.query(sql);
-
-            while (rs.next())
-            {
-                System.out.println("Table Name : " + rs.getString(1));
-
-                String sql1 = "Select * from " + rs.getString(1);
-
-                ResultSet rs1 = db.query(sql1);
-                ResultSetMetaData rsmd = rs1.getMetaData();
-                int n = rsmd.getColumnCount();
-                for (int i = 1; i <= n; i++)
-                {
-                    System.out.print(rsmd.getColumnName(i) + "\t");
-                }
-
-                System.out.println();
-                while (rs1.next())
-                {
-
-                    for (int i = 1; i <= n; i++)
-                    {
-                        System.out.print(rs1.getString(i) + "\t");
-
-                    }
-                    System.out.println();
-                }
-
-                System.out.println("\n\n");
-
-            }
-        } catch (Exception e)
-        {
-            System.out.println(e);
-        }
-    }
-*/
-   
-
-    public void setQueryAtoms(String query)
-    {
-        queryAtoms = query;
-    }
-    
+    }   
 }

@@ -46,7 +46,6 @@ public class Grounding extends Ground
         long startInference = System.nanoTime();
         
         Compression cp = new Compression(grounding, opt.addEvidence,start, opt.noOfIterations, opt.fquery, opt.fprog);
-        cp.setQueryAtoms(opt.fquery);
         if(!options.runBox)
         {	
         	cp.runBP();

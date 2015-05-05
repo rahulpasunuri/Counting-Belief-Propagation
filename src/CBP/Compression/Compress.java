@@ -22,53 +22,40 @@ public class Compress
 {
 
     private final RDB db;
-    //private final String[] color; 
     private ArrayList<Clause> clauses;
     private ArrayList<Predicate> predicates;
     private boolean colorChanged = true;
+    private int changePred=0;
+    private int changeClause=0;
     
     //this is the variable which holds the list of all compressed predicates..
-    ArrayList<Predicate> comPredicates = new ArrayList<Predicate>();
-    private MarkovLogicNetwork mln;
+    ArrayList<Predicate> comPredicates = new ArrayList<Predicate>();    
     //this is the variable which holds the list of all compressed clauses..
     ArrayList<Clause> comClauses = new ArrayList<Clause>();
     int k;
     String progFileName;
-    public Compress(RDB db1, MarkovLogicNetwork mln,int noOfIterations, String progFileName, boolean debug)
+    public Compress(RDB db1, int noOfIterations, String progFileName)
     {
         db = db1;
         k = noOfIterations;
-        this.mln = mln;
         this.progFileName = progFileName;
         
         //init all clauses and predicates..
-        init(debug);               
+        init();               
+        
+        //do the color passing..
+        colorPassing();
+        
+        //compress the factor graph
+        compression();        
     }
 
-    private void init(boolean debug)
+    private void init()
     {
         initializeClauses();
         System.out.println("Clauses initialized");
         initilalizePredicates();
-        System.out.println("IPreds initialised");
-        if(debug)
-        {
-        	//disabling these two to debug BP code..
-	        colorPassing();
-	        compression();
-        }
-        else
-        {
-        	for(Clause c : clauses)
-            {
-            	for(int l : c.getLiterals())
-            	{
-            		c.incrementIdenticalMessages(l);
-            	}
-            }
-        	comPredicates=predicates;
-        	comClauses=clauses;
-        }
+        System.out.println("Predicates initialised");                      
     }
 
     //INIT clauses..fetches clauses from data base..
@@ -211,6 +198,7 @@ public class Compress
 	//updates colors of all the clauses..
     private void assignNewClauseColors()
     {
+    	changeClause=0;
     	//used to check the presence of hash
     	HashMap<Integer, Boolean> ids = new HashMap<Integer, Boolean>();
         //ArrayList<Integer> ids = new ArrayList<Integer>();
@@ -219,8 +207,6 @@ public class Compress
         //HashMap<String, Boolean> colors_list = new HashMap<String, Boolean>();
         //maps hash code to color
         HashMap<Integer, String> colors = new HashMap<Integer, String>();
-        int cID = 65;       
-        
         for (Clause c : clauses)
         {
             int hash = c.msg.getMessage().hashCode();
@@ -229,41 +215,37 @@ public class Compress
             {
 //                This implies that the message is not seen before
 //                so u have to assign a new color here
+            	c.oldColor = c.color;
             	
-                String nColor = Character.toString((char) cID);
-                nColor = "C" + nColor;
-                cID++;
+            	c.color  = Character.toString((char) id);                
                 id = id + 1;
-
-                c.color = nColor;
+                
                 ids.put(hash, true);
-                colors.put(hash, nColor);
+                colors.put(hash, c.color);
+                /*
+                 * color change here should not be counted..
                 //colors_list.put(nColor, true);
                 if (!c.oldColor.equals(c.color))
                 {
                     colorChanged = true;
+                    changeClause++;
                 }
-                c.oldColor = c.color;
+                */                
+                changeClause++;
             } 
             else
             {
             	//the clause's color already exists..
             	//get the corresponding color
-                String nColor = colors.get(hash);
-                c.color = nColor;
-                if (!c.oldColor.equals(c.color))
-                {
-                    colorChanged = true;
-                }
-                c.oldColor = c.color;
+            	c.oldColor=c.color;
+            	c.color = colors.get(hash);                
             }
-
-            c.msg.clear();
         }
     }
 
     private void assignNewPredColors()
     {
+    	changePred=0;
     	//assigns new colors to the predicate vertices..
     	//used to check the presence of hash
     	HashMap<Integer, Boolean> ids = new HashMap<Integer, Boolean>();
@@ -273,24 +255,19 @@ public class Compress
         //HashMap<String, Boolean> colors_list = new HashMap<String, Boolean>();
         //maps hash code to color
         HashMap<Integer, String> colors = new HashMap<Integer, String>();
-    	
-    	
-        //ArrayList<Integer> ids = new ArrayList<Integer>();;
-
-        //ArrayList<String> colors = new ArrayList<String>();
-        char cID = 0;
         for (Predicate p : predicates)
-        {
-            cID++;
+        {        	
+            p.msg.sort();
             ArrayList<String> msg = p.msg.getMessage();
             Collections.sort(msg);
+            
             int hash = msg.hashCode();
 
             if (ids.get(hash)==null)
             {
-                String nColor = String.valueOf((cID));
+            	p.oldColor = p.color;
+                String nColor = Character.toString((char) id);
                 nColor = "P" + nColor;
-                int t = 0;
       
                 id = id + 1;
 
@@ -299,37 +276,33 @@ public class Compress
                 colors.put(hash, nColor);
                 //colors_list.put(nColor,true);
                 p.color = nColor;
-                if (!p.oldColor.equals(p.color))
-                {
-                    colorChanged = true;
-                }
-                p.oldColor = p.color;
+                changePred++;
             } 
             else
             {
-                String nColor = colors.get(hash);
-                p.color = nColor;
-                if (!p.oldColor.equals(p.color))
-                {
-                    colorChanged = true;
-                }
-                p.oldColor = p.color;
+            	p.oldColor = p.color;
+            	String nColor = colors.get(hash);
+                p.color = nColor;            	          
             }
-
-            p.msg.clear();
-
         }
-
     }
 
     private void colorPassing()
     {
+    	System.out.println("Performing message passing");
         int i = 0;
-        while (colorChanged)
+        int max_iterations=10;
+        
+        changePred = predicates.size();
+        changeClause = clauses.size();
+                
+        while ( (colorChanged || i<=2) && i<max_iterations)
         {
-
-            if(i==k)
-            	break;
+            float oldPred = changePred;
+            float oldClause = changeClause;
+        
+        	//if(i==k)
+            //	break;
             i++;
             
             colorChanged = false;
@@ -338,10 +311,22 @@ public class Compress
             //System.out.println("assigning new colors");
             assignNewPredColors();
             assignNewClauseColors();
+            //System.out.println("Current iteration#: " + i);  
             
-            System.out.println("Current Iteration #"+i);
+
+            float percentChangePred = ((float)((oldPred-changePred)*100))/predicates.size();
+            float percentChangeClause = ((float)(oldClause-changeClause*100))/clauses.size();
+            float minLimit=6;
+            //System.out.println(percentChangePred);
+            //System.out.println(percentChangeClause);
+            System.out.println(changePred);
+            System.out.println(changeClause);
+            if( i>=2 && percentChangePred  < minLimit && percentChangeClause < minLimit)
+            {
+            	break;
+            }            
         }
-        System.out.println("# of iterations: " + i);    
+        System.out.println("Total Number of color passing iterations: " + i);    
     }
 
     private Predicate getPred(Integer pid)
@@ -362,7 +347,7 @@ public class Compress
         System.out.println("Running Compression");
         int index=0;
         HashMap<String, Integer> colors= new HashMap<String, Integer>();
-        //ArrayList<String> colors = new ArrayList<String>();
+
         for (Predicate p : predicates)
         {
         	//if the color is a new color
@@ -370,11 +355,11 @@ public class Compress
             {
                 colors.put(p.color, index);
                 index++;
-                comPredicates.add(p); //add it to the list of compressed predicates..
                 if (!p.clusters.contains(p.id))
                 {
                     p.clusters.add(p.id);
                 }
+                comPredicates.add(p); //add it to the list of compressed predicates..
             } 
             else
             {
@@ -390,9 +375,9 @@ public class Compress
 
         colors.clear();
         index=0;
-        for (Clause c : clauses)
+        for (Clause clause  : clauses)
         {
-            Clause clause = c;
+            //Clause clause = c;
             //if we encounter a new color
             if (!colors.containsKey(clause.color))
             {
@@ -420,7 +405,7 @@ public class Compress
                             {
                                 newLits.add(t);                                
                             }                                                                                   
-                            clause.incrementIdenticalMessages(k);
+                            clause.incrementIdenticalMessages(t);
                             
                             break;
                         }
@@ -455,6 +440,7 @@ public class Compress
                         	
                             if (!c1.literals.contains(t))
                             {
+                            	//System.out.println("what????????????/");
                             	c1.literals.add(t);
                             } 
                             else
@@ -464,9 +450,7 @@ public class Compress
                             break;
                         }
                     }
-                }
-                
-                
+                }   
             }
         }
 

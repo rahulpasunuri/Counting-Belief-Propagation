@@ -73,17 +73,15 @@ public class BeliefPropagation
 		{
 			res = new ArrayList<String>();
 			ArrayList<String> t = createTFCombinations(i-1);
-			System.out.println("Size is "+Integer.toString(t.size())+" for length "+Integer.toString(i-1));
 			int size = t.size();
 	    	for(int j=0; j<size; j++)
 	    	{
-	    		System.out.println(j);
 	    		res.add("T"+t.get(j));
 	    		res.add("F"+t.get(j));
 	    	}		    	
 	    	BeliefPropagation.tfComb.put(i, res);
 		}
-		System.out.println("Returning");
+
 		BeliefPropagation.maxTFComb = length;
 	
     	
@@ -96,10 +94,7 @@ public class BeliefPropagation
         {
             ArrayList<Edge> neighbors = v.getNeighbors();
             if (v.getNode().isClause)
-            {
-            	
-            	
-            	
+            {    	
             	//message from clauses to predicates..
                 //Clauses
                 Clause c = v.getClause(); 
@@ -124,6 +119,7 @@ public class BeliefPropagation
     				}
     				else
     				{
+    					//System.out.println("Literal Size is "+ Integer.toString(v.getClause().getLiterals().size()-1));
     					ArrayList<String> comb = createTFCombinations(v.getClause().getLiterals().size()-1);
 						m.True=0;
 						m.False=0;
@@ -278,7 +274,6 @@ public class BeliefPropagation
 
     private void run()
     {
-    	int iteration=0;
         while (msgChanged)
         {
             msgChanged = false;
