@@ -27,7 +27,7 @@ public class Compress
     private boolean colorChanged = true;
     private int changePred=0;
     private int changeClause=0;
-    
+    private HashMap<Integer, Predicate> PredicateMap=new HashMap<Integer, Predicate>();
     //this is the variable which holds the list of all compressed predicates..
     ArrayList<Predicate> comPredicates = new ArrayList<Predicate>();    
     //this is the variable which holds the list of all compressed clauses..
@@ -39,12 +39,15 @@ public class Compress
         db = db1;
         k = noOfIterations;
         this.progFileName = progFileName;
-        
         //init all clauses and predicates..
         init();               
         
         //do the color passing..
+        long start_color = System.nanoTime();        
         colorPassing();
+        long end_color = System.nanoTime();
+        
+        System.out.println("Time taken(in milli seconds) for Color Passing is "+Long.toString((end_color-start_color)/ (long)Math.pow(10, 6)) );
         
         //compress the factor graph
         compression();        
@@ -152,7 +155,11 @@ public class Compress
                 }
                 predicates.add(ptemp);
             }
-
+            
+            for (Predicate p : predicates)
+            {
+            	PredicateMap.put(p.id, p);
+            }
         } 
         catch (Exception e)
         {
@@ -176,7 +183,7 @@ public class Compress
             ArrayList<Integer> lits = c.literals;
             for (int i : lits)
             {
-                String temp = getPred((Math.abs(i))).color;
+                String temp =  getPred((Math.abs(i))).color;
                 if (i < 0)
                 {
                     temp = "N" + temp;
@@ -333,19 +340,23 @@ public class Compress
 
     private Predicate getPred(Integer pid)
     {
-        for (Predicate p : predicates)
-        {
-            if (p.id == pid)
-            {
-                return p;
-            }
-        }
-        return null;
+    	return PredicateMap.get(pid);
     }
-
+    
   //This step is the last step for compressing the graph... 
     private void compression()
     {
+    	int max_size =-1;
+    	
+    	for(Clause c : clauses)
+    	{
+    		if (c.literals.size() > max_size)
+    		{
+    			max_size=c.literals.size();
+    		}    		
+    	}
+    	System.out.println("Max size is:"+Integer.toString(max_size));
+    	
         System.out.println("Running Compression");
         int index=0;
         HashMap<String, Integer> colors= new HashMap<String, Integer>();

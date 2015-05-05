@@ -61,6 +61,7 @@ public class BeliefPropagation
 
     private ArrayList<String> createTFCombinations(int length)
     {
+    	//System.out.println("Length is :"+Integer.toString(length));
     	//writing a iterative version instead of a recursive version to overcome the GC overhead exception.
     	if(BeliefPropagation.tfComb.containsKey(length))
     	{
@@ -84,7 +85,7 @@ public class BeliefPropagation
 
 		BeliefPropagation.maxTFComb = length;
 	
-    	
+    	System.out.println("Length is "+Integer.toString(length));
     	return res;
     }
     
@@ -379,11 +380,16 @@ public class BeliefPropagation
         {            
             Vertex v = g.getClusteredPredicateVertexByID(q.id);
             Predicate p = v.getPredicate();
-            if(p.probability!=0)
+            
+            //handle the nan case..
+            if(p.probability == Double.NaN)
             {
-            	String temp = q.query+": "+p.probability+"\n";;                                
-            	bw.write(temp);            
-            }          
+            	p.probability=0;
+            }
+            
+        	String temp = q.query+": "+p.probability+"\n";;                                
+        	bw.write(temp);            
+                  
         }
         bw.flush();
         bw.close();    

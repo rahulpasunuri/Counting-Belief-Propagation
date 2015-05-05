@@ -37,4 +37,8 @@ class PMessage
         msg.add(s);
     }
     
+    int size()
+    {
+    	return msg.size();    	
+    }
 }

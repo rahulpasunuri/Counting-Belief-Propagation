@@ -322,7 +322,10 @@ public class EstimateQuery
                 	colString +=", ";                	
                 }
             }
-    		    		    		    		    		    		    		    		       		
+    		    		    
+            //
+            
+            
 	        String q2 = "Select atomid, "+colString+" from "+pred.getRelName()+" where atomid in (Select atomid from mln0_atoms where isquery = TRUE and isqueryevid = FALSE and atomid is not NULL)";	        	        	        	     	        
 	        try
 	        {

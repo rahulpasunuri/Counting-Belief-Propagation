@@ -17,6 +17,8 @@ public class Main {
 		
 		CommandOptions options = UIMan.parseCommand(args);
 		
+		Config.mark_all_atoms_active=true;
+        Config.disable_partition =true;
 		UIMan.println("*** Welcome to " + Config.product_name + "!");
 		if(options == null){
 			return;

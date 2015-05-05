@@ -33,10 +33,10 @@ public class Main
         //Config.keep_db_data =true;//TODO: Remove this.
         
         //mark all atoms as active for CBP
-        Config.mark_all_atoms_active=true;
+        //Config.mark_all_atoms_active=true;
         
         //we should not partition for CBP
-        Config.disable_partition =true;
+        //Config.disable_partition =true;
         
         if (!options.isDLearningMode)
         {                        

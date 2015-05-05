@@ -7,6 +7,7 @@ package CBP.Infer.GraphStructure;
 
 import CBP.Compression.Predicate;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  *
@@ -18,6 +19,10 @@ public class Graph
     private final ArrayList<Vertex> vertices;
     private final ArrayList<Edge> edges;
     private ArrayList<Vertex> predVertices = new ArrayList<Vertex>();
+    private HashMap<Integer, Vertex>  predVertexMap = new HashMap<Integer, Vertex>();
+    
+    private HashMap<Integer, Integer>  predClusterMap = new HashMap<Integer, Integer>();
+    
     private int count=1;
     public Graph()
     {
@@ -60,6 +65,13 @@ public class Graph
                 Vertex v = new Vertex(n);
                 addVertex(v);
                 predVertices.add(v);
+                int predId = v.getNode().getID();
+                predVertexMap.put(predId,v);
+                
+                for(int id : v.getPredicate().getClusters())
+                {
+                	predClusterMap.put( id, predId);                	
+                }
             }
 
             return true;
@@ -86,6 +98,7 @@ public class Graph
 
     public Vertex getPredVertexByID(int id)
     {
+    	/*
         for (Vertex v : predVertices)
         {
             Node temp = v.getNode();
@@ -94,7 +107,9 @@ public class Graph
                 return v;
             }
         }
-        return null;
+        */
+        return predVertexMap.get(id);
+        //return null;
     }
 
     public void printVertices()
@@ -150,6 +165,7 @@ public class Graph
     
     public Vertex getClusteredPredicateVertexByID(int id)
     {
+    	/*
         for (Vertex v : predVertices)
         {            
             Predicate p = v.getPredicate();
@@ -161,19 +177,8 @@ public class Graph
             }
         }
         return null;
+        */
+    	int predId = predClusterMap.get(id);
+    	return getPredVertexByID(predId);
     }    
-    
-    public Vertex getPredicateVertexById(int id)
-    {
-        for (Vertex v : predVertices)
-        {            
-            Predicate p = v.getPredicate();
-            if(p.getID()==id)
-            {
-            	return v;
-            }
-        }
-        return null;    	
-    }
-    
 }
