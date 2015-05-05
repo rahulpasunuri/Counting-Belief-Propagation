@@ -388,12 +388,7 @@ public class BeliefPropagation
             {
             	String temp = q.query+": "+p.probability+"\n";;                                
             	bw.write(temp);            
-            }
-            
-            if(q.query == "category(Paper2504,Operating_Systems)")
-            {
-            	System.out.println("True is "+p.probability);            	
-            }            
+            }          
         }
         bw.flush();
         bw.close();    

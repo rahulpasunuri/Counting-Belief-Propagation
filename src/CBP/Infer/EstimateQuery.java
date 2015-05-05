@@ -341,10 +341,10 @@ public class EstimateQuery
 	                    ResultSet rs2 = db.query(sql);
 	                    while(rs2.next())
 	                    {
-	                    	p+=rs2.getString(1);
+	                    	p+= ("\""+rs2.getString(1)+"\"");
 	                    	if(k!=cols.size()+1)
 	                    	{
-	                    		p+=",";
+	                    		p+=", ";
 	                    	}
 	                    	break;
 	                    }
