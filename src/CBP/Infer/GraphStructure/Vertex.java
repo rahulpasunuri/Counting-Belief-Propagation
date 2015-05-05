@@ -45,7 +45,7 @@ public class Vertex
         return neighbors;
     }
     
-    public boolean addNeighbor(Edge e)
+    public void addNeighbor(Edge e)
     {
         if(e==null)
         {
@@ -54,9 +54,7 @@ public class Vertex
         else
         {
             neighbors.add(e);
-            return true;
         }
-        
     }
     public void setNodeID(int x)
     {

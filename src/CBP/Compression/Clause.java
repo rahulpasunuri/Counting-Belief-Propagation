@@ -60,12 +60,15 @@ public class Clause
     public int getIdenticalMsgs(int j)
     {
     	j=Math.abs(j);
-    	if(noOfIdenticalMsgs.keySet().contains(j))
-    	{
-    		return (Integer)noOfIdenticalMsgs.get(j);    		
-    	}
+    	//if(noOfIdenticalMsgs.containsKey(j))
+    	//if(noOfIdenticalMsgs.keySet().contains(j))
+    	//{
+    	//deleting the if condition..so this method must be used carefully,.
     	
-    	return -1;
+    	return (Integer)noOfIdenticalMsgs.get(j);    		
+    	//}
+    	
+    	//return -1;
     	//else
     	//{
     	//	noOfIdenticalMsgs.put(new Integer(j), new Integer(1));

@@ -13,6 +13,8 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
+
 import tuffy.db.RDB;
 import tuffy.mln.MarkovLogicNetwork;
 import tuffy.mln.Predicate;
@@ -322,10 +324,16 @@ public class EstimateQuery
                 	colString +=", ";                	
                 }
             }
-    		    		    
-            //
-            
-            
+            HashMap<Integer, String> constants = new HashMap<Integer, String>();
+        	String sql = "Select id,string from constants";	                	
+            ResultSet rs2 = db.query(sql);
+            while(rs2.next())
+            {
+            	int id = rs2.getInt(1);
+            	String id_string = rs2.getString(2);
+            	constants.put(id, id_string);
+            }
+    		
 	        String q2 = "Select atomid, "+colString+" from "+pred.getRelName()+" where atomid in (Select atomid from mln0_atoms where isquery = TRUE and isqueryevid = FALSE and atomid is not NULL)";	        	        	        	     	        
 	        try
 	        {
@@ -340,17 +348,12 @@ public class EstimateQuery
 	                for(int k=2; k<=cols.size()+1; k++)
 	                {
 	                	int cId = rs.getInt(k);
-	                	String sql = "Select string from constants where id="+cId;	                	
-	                    ResultSet rs2 = db.query(sql);
-	                    while(rs2.next())
-	                    {
-	                    	p+= ("\""+rs2.getString(1)+"\"");
-	                    	if(k!=cols.size()+1)
-	                    	{
-	                    		p+=", ";
-	                    	}
-	                    	break;
-	                    }
+	                	String s = constants.get(cId);
+                    	p+= ("\""+s+"\"");
+                    	if(k!=cols.size()+1)
+                    	{
+                    		p+=", ";
+                    	}
 	                }
 	                //close with the ')'
 	                p+=")";
