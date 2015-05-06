@@ -76,11 +76,10 @@ public class Compress
 
                 ArrayList<Integer> lit = parseLiterals(lits);
                 Clause temp;
-                
+                //System.out.println("Weights are "+weight);
                 temp = new Clause(id, lit, weight);
                 clauses.add(temp);
             }
-
         } 
         catch (SQLException e)
         {
