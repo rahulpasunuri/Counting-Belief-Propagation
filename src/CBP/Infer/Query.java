@@ -14,4 +14,5 @@ public class Query
 {
     String query;
         int id;
+        double probability;
 }
