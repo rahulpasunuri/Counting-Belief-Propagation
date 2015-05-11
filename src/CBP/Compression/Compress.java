@@ -34,21 +34,26 @@ public class Compress
     ArrayList<Clause> comClauses = new ArrayList<Clause>();
     int k;
     String progFileName;
+    
+    private boolean disableCompression=false;
+    
     public Compress(RDB db1, int noOfIterations, String progFileName)
     {
         db = db1;
         k = noOfIterations;
         this.progFileName = progFileName;
+        disableCompression=true;
         //init all clauses and predicates..
         init();               
-        
-        //do the color passing..
-        long start_color = System.nanoTime();        
-        colorPassing();
-        long end_color = System.nanoTime();
-        
-        System.out.println("Time taken(in milli seconds) for Color Passing is "+Long.toString((end_color-start_color)/ (long)Math.pow(10, 6)) );
-        
+        if(disableCompression)
+        {
+	        //do the color passing..
+	        long start_color = System.nanoTime();        
+	        colorPassing();
+	        long end_color = System.nanoTime();
+	        
+	        System.out.println("Time taken(in milli seconds) for Color Passing is "+Long.toString((end_color-start_color)/ (long)Math.pow(10, 6)) );
+        }
         //compress the factor graph
         compression();        
     }
@@ -301,7 +306,7 @@ public class Compress
         
         changePred = predicates.size();
         changeClause = clauses.size();
-                
+        k=6;        
         //while ( (colorChanged || i<=2) && i<max_iterations)
         while(i<k)
         {
@@ -320,7 +325,7 @@ public class Compress
             assignNewClauseColors();
             //System.out.println("Current iteration#: " + i);  
             
-            /*
+            
             float percentChangePred = ((float)((oldPred-changePred)*100))/predicates.size();
             float percentChangeClause = ((float)(oldClause-changeClause*100))/clauses.size();
             float minLimit=6;
@@ -328,11 +333,11 @@ public class Compress
             //System.out.println(percentChangeClause);
             System.out.println(changePred);
             System.out.println(changeClause);
-            if( i>=2 && percentChangePred  < minLimit && percentChangeClause < minLimit)
+            if( i>=2 && Math.abs(percentChangePred)  < minLimit && Math.abs(percentChangeClause) < minLimit)
             {
             	break;
             } 
-            */           
+                       
         }
         System.out.println("Total Number of color passing iterations: " + i);    
     }
@@ -345,6 +350,34 @@ public class Compress
   //This step is the last step for compressing the graph... 
     private void compression()
     {
+    	if(disableCompression)
+    	{
+    		for(Predicate p: predicates)
+    		{                
+                if (!p.clusters.contains(p.id))
+                {
+                    p.clusters.add(p.id);
+                }
+                comPredicates.add(p); //add it to the list of compressed predicates..    			
+    		}
+    		
+    		for(Clause c : clauses)
+    		{
+                for (int k : c.literals)
+                {                                                                                             
+                    c.incrementIdenticalMessages(k);                        
+                }    
+                               
+                if (!c.clusters.contains(c.id))
+                {
+                    c.clusters.add(c.id);
+                }
+                comClauses.add(c);                
+    		}
+    		
+    		return;
+    	}
+    	
     	int max_size =-1;
     	
     	for(Clause c : clauses)

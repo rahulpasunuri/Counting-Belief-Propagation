@@ -36,7 +36,7 @@ public class Main
         Config.mark_all_atoms_active=true;
         
         //we should not partition for CBP
-        Config.disable_partition =true;
+        //Config.disable_partition =true;
         
         if (!options.isDLearningMode)
         {                        
