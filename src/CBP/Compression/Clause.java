@@ -64,7 +64,7 @@ public class Clause
     	//if(noOfIdenticalMsgs.keySet().contains(j))
     	//{
     	//deleting the if condition..so this method must be used carefully,.
-    	
+    	//return 1;
     	return (Integer)noOfIdenticalMsgs.get(j);    		
     	//}
     	
