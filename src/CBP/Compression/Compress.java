@@ -422,7 +422,9 @@ public class Compress
 
         colors.clear();        
         //map the old literal ids to new literal ids..
-        for(Clause clause : clauses)
+        HashMap<String, ArrayList<Clause>> colorMap=new HashMap<String, ArrayList<Clause>>();
+        index=0;        
+        for (Clause clause  : clauses)
         {
             ArrayList<Integer> newLits = new ArrayList<Integer>();
             for (int k : clause.literals)
@@ -439,13 +441,10 @@ public class Compress
                 }                                                                                   
                 clause.incrementIdenticalMessages(t);                        
             }    
-            clause.literals = newLits;     	        	
-        }
-        
-        HashMap<String, ArrayList<Clause>> colorMap=new HashMap<String, ArrayList<Clause>>();
-        index=0;        
-        for (Clause clause  : clauses)
-        {
+            clause.literals = newLits;  
+        	
+        	
+        	
             //Clause clause = c;
             //if we encounter a new color
             if (!colorMap.containsKey(clause.color))

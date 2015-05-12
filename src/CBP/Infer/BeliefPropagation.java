@@ -22,6 +22,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 
+import tuffy.util.Config;
+
 import com.sun.xml.internal.ws.handler.ClientMessageHandlerTube;
 
 /**
@@ -366,6 +368,7 @@ public class BeliefPropagation
     public void computeProbabilities() throws IOException
     {
         System.out.println("Computing Probabilities");
+        
         String fileName = "results.txt";
         File file = new File(fileName);
 
@@ -398,10 +401,7 @@ public class BeliefPropagation
             else
             {
             	q.probability=p.probability;
-            }
-            
-        	//String temp = q.query+": "+p.probability+"\n";;                                    		        
-        	//bw.write(temp);                		
+            }            		
         }
         
         //sort the queries based on their probabilities
@@ -423,7 +423,9 @@ public class BeliefPropagation
 		});
         
         for(Query q : queries)
-        {     
+        {  
+        	//format the probabilities to 4 decimal points..
+        	//doing this to match tuffy's output..
         	//new DecimalFormat("#.##").format(q.probability)
         	String prob = new DecimalFormat("#.####").format(q.probability);
         	
