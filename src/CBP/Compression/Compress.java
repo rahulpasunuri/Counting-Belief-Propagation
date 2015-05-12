@@ -42,7 +42,7 @@ public class Compress
         db = db1;
         k = noOfIterations;
         this.progFileName = progFileName;
-        disableCompression=true;
+        disableCompression=false;
         //init all clauses and predicates..
         init();               
         if(!disableCompression)
@@ -422,9 +422,7 @@ public class Compress
 
         colors.clear();        
         //map the old literal ids to new literal ids..
-        HashMap<String, ArrayList<Clause>> colorMap=new HashMap<String, ArrayList<Clause>>();
-        index=0;        
-        for (Clause clause  : clauses)
+        for(Clause clause : clauses)
         {
             ArrayList<Integer> newLits = new ArrayList<Integer>();
             for (int k : clause.literals)
@@ -440,11 +438,34 @@ public class Compress
                     newLits.add(t);                                
                 }                                                                                   
                 clause.incrementIdenticalMessages(t);                        
-            }    
-            clause.literals = newLits;  
-        	
-        	
-        	
+            } 
+            
+            /*
+            ArrayList<Integer> new_list = new ArrayList<Integer>();
+            System.out.print("changed: ");
+            
+            for(int n : newLits)
+            {
+            	if(!newLits.contains(-n))
+            	{
+            		if(!new_list.contains(n))
+            		{
+            			System.out.print(n+" ");
+            			new_list.add(n);	
+            		}
+                    clause.incrementIdenticalMessages(n);  	
+            	}
+            }
+            System.out.println();
+            clause.literals = new_list;     	        	
+        	*/
+            clause.literals=newLits;
+        }
+        
+        HashMap<String, ArrayList<Clause>> colorMap=new HashMap<String, ArrayList<Clause>>();
+        index=0;        
+        for (Clause clause  : clauses)
+        {
             //Clause clause = c;
             //if we encounter a new color
             if (!colorMap.containsKey(clause.color))
@@ -485,10 +506,12 @@ public class Compress
                 	final_clause.clusters.add(clause.id);
 	                	               
 	                //add the current clusters literal information..
-	                for (int t : clause.literals)
-	                {	                	                    	
-	                	final_clause.incrementIdenticalMessages(t);	                                    
-	                }
+			        for (int t : clause.literals)
+			        {	
+			        	//System.out.println("test: "+t);
+			        	for(int n=0; n <clause.getIdenticalMsgs(t); n++)
+			        		final_clause.incrementIdenticalMessages(t);	                                    
+			        }
                 }
                 else
                 {
@@ -498,13 +521,23 @@ public class Compress
                         clause.clusters.add(clause.id);
                     }
                     comClauses.add(clause);
-                	ArrayList<Clause> temp = new ArrayList<Clause>();
+                	ArrayList<Clause> temp = colorMap.get(clause.color);
                 	temp.add(clause);
                     colorMap.put(clause.color, temp);	                	
                 }
             }
         }
 
+        for(Clause c : comClauses)
+        {
+        	for(int k : c.literals)
+        	{
+        		System.out.print(c.getIdenticalMsgs(k)+" ");
+        	}
+            System.out.println();
+        }
+
+        
         System.out.println("Predicates are compressed from "+predicates.size() + " predicates to  " + comPredicates.size()+" predicates");
         System.out.println("Clauses are compressed from "+clauses.size() + " clauses to " + comClauses.size()+" clauses");
     }
