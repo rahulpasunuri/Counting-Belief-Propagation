@@ -1,0 +1,4 @@
+0.6413	Smokes("Frank")
+0.5451	Smokes("Bob")
+0.4455	Smokes("Gary")
+0.4455	Smokes("Helen")
