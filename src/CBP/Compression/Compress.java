@@ -45,16 +45,16 @@ public class Compress
         disableCompression=false;
         //init all clauses and predicates..
         init();               
+        long start_color = System.nanoTime();
         if(!disableCompression)
         {
-	        //do the color passing..
-	        long start_color = System.nanoTime();        
+	        //do the color passing..        
 	        colorPassing();
-	        long end_color = System.nanoTime();	        
-	        System.out.println("Time taken(in milli seconds) for Color Passing is "+Long.toString((end_color-start_color)/ (long)Math.pow(10, 6)) );
         }
         //compress the factor graph
         compression();        
+        long end_color = System.nanoTime();	        
+        System.out.println("Time taken(in milli seconds) for Compression is "+Long.toString((end_color-start_color)/ (long)Math.pow(10, 6)) );
     }
 
     private void init()

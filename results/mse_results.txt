@@ -1,0 +1,5 @@
+cbp_ade: 0.483
+cbp_ade_allactive: 0.848
+cbp_no_compression_ade: 0.483
+tuffy_ade: 0.501
+tuffy_ade_allactve: 0.875

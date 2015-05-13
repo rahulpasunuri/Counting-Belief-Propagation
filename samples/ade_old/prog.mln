@@ -1,21 +1,12 @@
-// TODO
-// Learn weights
-// Multiple drugs and conditions in a single rule
-
-// Hidden predicates:
-// Get distribution over these predicates for each rule
 adverse(rule)
 not_adverse(rule)
 not_related(rule)
 
-// Observed predicates:
 rule(rule)
-//class(class)
+
 drug(drug)
-//drugClass(drug, class)
+
 effect(effect)
-//condition1(condition) // eg condition1(diabetic)
-//condition2(condition, value)  // eg condition2(age, 50)
 
 presentDrug(rule, object)
 presentEffect(rule, object)
@@ -42,18 +33,6 @@ dpR(rule, dp)
 dpH(rule, wo, subwostr, wordType)
 dpWhileReceiving(rule, dp)
 dpWhileTaking(rule, dp)
-
-/*
-dpRCount(rule, dp, n, n)
-dpWhileReceivingCount(rule, dp, n, n)
-dpWhileTakingCount(rule, dp, n, n)
-dpDirectCause(rule, dp, dp, n, n)
-dpDirectIncrease(rule, dp, dp, n, n)
-dpRisk(rule, dp, dp, n, n)
-dpRiskAssociated(rule, dp, dp, n, n)
-dpAssociated(rule, dp, dp, n, n)
-dpConsequence(rule, dp, n, n)
-*/
 dpRCount(rule, dp1, n, n)
 dpWhileReceivingCount(rule, dp2, n, n)
 dpWhileTakingCount(rule, dp3, n, n)
@@ -78,6 +57,7 @@ wgt: cosineSimilarityWeight(r, wgt) => adverse(r)
 
 // drug and effect in same sentence
 1 dpBetweenDrugAndEffect(r) => adverse(r)
+
 
 // effect after drug
 //2 dpR(r,dp), [contains(dp, "PREP_AFTER") OR contains(dp, "PREP_FOLLOWING")] => adverse(r)
@@ -137,15 +117,4 @@ dpProduce(r, dp1, dp2, up, down) => adverseCount(r, up, down).
 2 adverseCount(r, up, down), [up+down = 3] => adverse(r)
 1.5 adverseCount(r, up, down), [up+down >= 4] => adverse(r)
 
-
-//dpR(r,dp) := effect(e), effectWord(e, ew), drug(d), drugWord(d, dw), present(r, d), present(r, e), dependencyPath(ar, se, ew, dw, dp).
-//dpH(r,postwo) := effect(e), effectWord(e, ew), drug(d), drugWord(d, dw), present(r, d), present(r, e), preHyphenWord(wo, dw), postHyphenWord(wo, postwo), dependencyType(ar, se, ew, wo, AMOD).
-//dpRWhile(r,wo) := effect(e), effectWord(e, ew), drug(d), drugWord(d, dw), present(r, d), present(r, e), dependencyPath(ar, se, ew, wo, dp1), contains(dp1, "PREP_WHILE"), dependencyPath(ar, se, wo, dw, dp2).
-
 -0.5 !adverse(r)
-
-// drugseffects2 learned weights
-//-5.8851       !dpBetweenDrugAndEffect(v0)  v  adverse(v0)  //1.0
-//-3.1994       !dpR(v0, v1)  v  adverse(v0)  v [NOT (strpos(v1, "PREP_AFTER") > 0 OR strpos(v1, "PREP_FOLLOWING") > 0)] //2.0
-//-3.6014       !dpH(v0, v1, v2, v3)  v !caselessWordString(v1, v2)  v  adverse(v0)  v [NOT (v2 = "induced")] //4.0
-//-2.5668       !dpWhileReceiving(v0, v1)  v  adverse(v0)  v [NOT strpos(v1, "PREPC_WHILE") > 0] //6.0

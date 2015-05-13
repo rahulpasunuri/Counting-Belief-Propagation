@@ -128,10 +128,12 @@ public class BeliefPropagation
     					ArrayList<String> comb = createTFCombinations(v.getClause().getLiterals().size()-1);
 						m.True=0;
 						m.False=0;
-    					for(String s : comb)
+    					//System.out.println("Comb size is: "+comb.size());
+						for(String s : comb)
     					{
 							double potentialTrue = Math.exp(c.getweight());
-							double potentialFalse = Math.exp(c.getweight());
+							double potentialFalse = potentialTrue;
+							//System.out.println("Before Potentials: "+potentialTrue);
 							//double potential = f.cl.weight;
 							//determine the truthness of the clause..
 							int k=0, strIndex = 0;
@@ -156,20 +158,21 @@ public class BeliefPropagation
 								if(!isTrue)
 								{
 									potentialFalse = 1;
-								}			 								 
+								}
 							}
 							else
 							{								
 								if(!isTrue)
 								{
 									potentialTrue = 1;
-								}			 		
+								}	
 							}   
 							double tempTrue = potentialTrue;
 							double tempFalse = potentialFalse;
 							//System.out.println("Potentials are"+potentialTrue+"\t"+potentialFalse);
 							//System.out.println("Neighbors count#"+neighbors.size());						
-							strIndex = 0;;
+							strIndex = 0;
+							//System.out.println("Before: "+tempTrue+"\t"+tempFalse);
 							for(Edge e  : neighbors)
 							{
 								if(!n.equals(e))
@@ -188,11 +191,12 @@ public class BeliefPropagation
 									strIndex++;
 								}								
 							}
+							//System.out.println(tempTrue+"\t"+tempFalse);
 							m.True += tempTrue;
 							m.False += tempFalse;													
     					}    					
     				}                   
-    				//System.out.println("Priting Clause Message "+m.True+"\t"+m.False);
+    				//System.out.println("Printing Clause Message "+m.True+"\t"+m.False+"\t"+iteration);
     				/*
     				Message oMsg = n.getClausemsg();
                     if (Math.abs(m.False - oMsg.False) > 0.1 || Math.abs(m.True - oMsg.True) > 0.1)
@@ -257,12 +261,12 @@ public class BeliefPropagation
                     
                     //normalize the message
                     double sum = m.True+m.False;
-                    if(sum!=0)
+                    if(sum!=(double)0)
                     {
                     	m.True /= sum;
                     	m.False /=sum;
                     }
-    				//System.out.println("Priting Predicate Message "+m.True+"\t"+m.False+"\t"+iteration);
+    				//System.out.println("Printing Predicate Message "+m.True+"\t"+m.False+"\t"+iteration);
                     /*
     				Message oMsg = n.getPredMsg();
                     if (Math.abs(m.False - oMsg.False) > 0.1 || Math.abs(m.True - oMsg.True) > 0.1)
@@ -305,7 +309,7 @@ public class BeliefPropagation
                     }
                     
                     double newProb=0;
-                    if(True+False!=0)
+                    if(True+False!=(double)0)
                     {
                     	newProb=True / (True+False);                    	
                     }

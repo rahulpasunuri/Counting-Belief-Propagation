@@ -1,0 +1,37 @@
+Database schema     = tuffy_iub_rahul_4276
+Current directory   = /home/rahul/Desktop/github/cbp/Counting-Belief-Propagation
+Temporary directory = /tmp/tuffy-workspace/tuffy_iub_rahul_4276
+*** Welcome to Tuffy 0.3!
+>>> Parsing the Files for Grounding.....
+>>> Connecting to RDBMS at jdbc:postgresql://localhost:5432/postgres
+>>> Parsing program file: samples/ade/prog.mln
+>>> Parsing query file: samples/ade/query.db
+>>> Parsing evidence file: samples/ade/evidence.db
+>>> Storing evidence...
+adverse(v1)
+>>> Grounding...
+### atoms = 1,110,698; clauses = 144,170
+After Construction
+
+
+>>> Grounding completed.....
+Clauses initialized
+Predicates initialised
+Performing message passing
+Total Number of color passing iterations: 5
+Time taken(in milli seconds) for Color Passing is 3631
+Max size is:2
+Running Compression
+Predicates are compressed from 1110698 predicates to  490 predicates
+Clauses are compressed from 144170 clauses to 503 clauses
+Starting BP
+Computing Probabilities
+Results have been saved in: results.txt
+Time taken(in milli seconds) for Compression is 2777669
+Time taken(in milli seconds) for inference is 143
+Total Time taken(in milli seconds) is 2848436
+>>> Cleaning up temporary data
+    Removing database schema 'tuffy_iub_rahul_4276'...OK
+    Removing temporary dir '/tmp/tuffy-workspace/tuffy_iub_rahul_4276'...OK
+*** Tuffy exited at 16:15:08 5/12/15 after running for [47 min, 28.591 sec]
+

@@ -1,0 +1,5 @@
+FILE DELETED
+
+Microsoft Forefront Protection for Exchange Server removed a file since it was found to match a filter.
+File name: "ADE-MLN.zip->tuffy.jar"
+Filter name: "FILE FILTER= IU File Filter List: *.jar"
